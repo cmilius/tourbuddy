@@ -82,5 +82,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         //mMap.addMarker(new MarkerOptions().position(new LatLng(42.0255, -93.6460)).title("Campanile"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.0255, -93.6460)).title("Campanile"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.024220,-93.651840)).title("Helser Hall");
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.023917,-93.650437)).title("Friley Hall");
     }
 }
