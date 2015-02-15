@@ -64,7 +64,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     @Override
     public boolean onMarkerClick(Marker marker) {
         Toast.makeText(curContext, marker.getTitle() + " was clicked.\nCoordinates:(" + marker.getPosition().latitude + "," + marker.getPosition().longitude + ")", Toast.LENGTH_LONG).show();
-        return true;
+        return false;
     }
 
     @Override
@@ -82,5 +82,11 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         //mMap.addMarker(new MarkerOptions().position(new LatLng(42.0255, -93.6460)).title("Campanile"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(0, 0)).title("Marker"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.0255, -93.6460)).title("Campanile"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.026163, -93.648340)).title("Beardshear Hall"));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
+        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
+
     }
 }
