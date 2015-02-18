@@ -3,5 +3,5 @@
 
     <string name="app_name">CampusTour</string>
     <string name="title_activity_map_view">CampusMap</string>
-
+    <string name="TextViewInfoHeaderString">Info Detail View</string>
 </resources>
