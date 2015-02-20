@@ -64,6 +64,8 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         setUpMapIfNeeded();
 
         setupLocationListener();
+
+        //hello
     }
 
     private void setupLocationListener()
