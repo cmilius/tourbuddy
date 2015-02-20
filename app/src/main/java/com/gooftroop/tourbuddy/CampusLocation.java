@@ -1,5 +1,6 @@
 package com.gooftroop.tourbuddy;
 
+import android.location.Location;
 import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;

@@ -1,7 +1,11 @@
 package com.gooftroop.tourbuddy;
 
+import android.app.Activity;
 import android.content.Context;
 import android.graphics.Color;
+import android.location.Location;
+import android.location.LocationManager;
+import android.location.LocationListener;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -30,7 +34,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
     private GoogleMap mMap;
 
-    private Context curContext = this;
+    private Activity curActivity = this;
 
     private boolean SHOW_BUILDING_BOUNDS = true;
 
@@ -58,6 +62,31 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
         locations.put(createCooverHall(), false);
         setUpMapIfNeeded();
+    }
+
+    private void setupLocationListener()
+    {
+        // Acquire a reference to the system Location Manager
+        LocationManager locationManager = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+
+        // Define a listener that responds to location updates
+        LocationListener locationListener = new LocationListener() {
+            public void onLocationChanged(Location location) {
+
+                Toast.makeText(curActivity, "Your GPS Location:\n(" + location.getLatitude() + "," + location.getLongitude() + ")", Toast.LENGTH_LONG).show();
+            }
+
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
+
+            public void onProviderEnabled(String provider) {}
+
+            public void onProviderDisabled(String provider) {}
+        };
+
+        if (locationManager != null)
+        {
+            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
+        }
     }
 
     private List<Fragment> getFragments() {
@@ -109,13 +138,13 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(curContext, marker.getTitle() + " was clicked.\nCoordinates:(" + marker.getPosition().latitude + "," + marker.getPosition().longitude + ")", Toast.LENGTH_LONG).show();
+        Toast.makeText(curActivity, marker.getTitle() + " was clicked.\nCoordinates:(" + marker.getPosition().latitude + "," + marker.getPosition().longitude + ")", Toast.LENGTH_LONG).show();
         return false;
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Toast.makeText(curContext, "(" + latLng.latitude + "," + latLng.longitude + ")", Toast.LENGTH_LONG).show();
+        Toast.makeText(curActivity, "(" + latLng.latitude + "," + latLng.longitude + ")", Toast.LENGTH_LONG).show();
     }
 
     /**
