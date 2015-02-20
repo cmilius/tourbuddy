@@ -151,6 +151,11 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.028103, -93.647554)).title("Human Nutritional Sciences Building"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.029602,-93.643874)).title("Kildee Hall/Meats Laboratory"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.029195,-93.646342)).title("Science Hall"));
+       mMap.addMarker(new MarkerOptions().position(new LatLng(42.029390, -93.647356)).title("Physics Hall"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.029426, -93.648654)).title("Gilman Hall"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.029586,-93.645634)).title("Lagomarcino Hall"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.031056,-93.649700)).title("Molecular Biology Building"));
+       
         
 
         Set<CampusLocation> locationList = locations.keySet();
