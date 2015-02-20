@@ -62,6 +62,8 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
         locations.put(createCooverHall(), false);
         setUpMapIfNeeded();
+
+        setupLocationListener();
     }
 
     private void setupLocationListener()
@@ -132,6 +134,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
                 mMap.moveCamera( CameraUpdateFactory.newLatLngZoom(new LatLng(42.0255, -93.6465), 15.5f) );
                 mMap.setOnMapClickListener(this);
                 mMap.setOnMarkerClickListener(this);
+                mMap.setMyLocationEnabled(true);
             }
         }
     }
@@ -154,7 +157,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
      * This should only be called once and when we are sure that {@link #mMap} is not null.
      */
     private void setUpMap() {
-        mMap.addMarker(new MarkerOptions().position(new LatLng(42.0255, -93.6460)).title("Campanile"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.02541, -93.646072)).title("Campanile"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.024220,-93.651840)).title("Helser Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.023917,-93.650437)).title("Friley Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.026163, -93.648340)).title("Beardshear Hall"));
