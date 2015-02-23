@@ -14,7 +14,6 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.widget.Toast;
 
-import com.gooftroop.tourbuddy.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -41,31 +40,53 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     /**
      * Maintains a Master List of All Campus location and whether or not they have been visited
      */
-    private HashMap<CampusLocation, Boolean> locations = new HashMap<CampusLocation, Boolean>();
+    private HashMap<CampusLocation, Boolean> locationToVisited = new HashMap<CampusLocation, Boolean>();
+
+    private HashMap<LatLng, CampusLocation> markerLatLngToLocation = new HashMap<LatLng, CampusLocation>();
 
     DetailPageAdapter pageAdapter;
+
+    private int curLocation = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_images_layout);
 
-        List<Fragment> fragments = getFragments();
+        setPageViewer(1);
 
-        pageAdapter = new DetailPageAdapter(getSupportFragmentManager(), fragments);
+        DataSource db = new DataSource(curActivity);
+        db.open();
 
+        ArrayList<CampusLocation> dbLocations = db.getAllLocations();
+        for (int i = 0; i<dbLocations.size(); i++)
+        {
+            locationToVisited.put(dbLocations.get(i), dbLocations.get(i).getVisited());
+            markerLatLngToLocation.put(dbLocations.get(i).getMarkerLocation(), dbLocations.get(i));
+        }
+        db.close();
+
+        setUpMapIfNeeded();
+
+        setupLocationListener();
+    }
+
+    private void setPageViewer(int locationId)
+    {
         ViewPager pager = (ViewPager) findViewById(R.id.viewpager);
+//        pager.removeAllViews();
+//        pager.setAdapter(null);
+
+        List<Fragment> fragments = getFragments(locationId);
+
+        if (pageAdapter != null) {
+            pageAdapter.clearAll();
+        }
+        pageAdapter = new DetailPageAdapter(getSupportFragmentManager(), fragments);
         pager.setAdapter(pageAdapter);
 
         //Set the class used for changing the animation for sliding images on the bottom
         pager.setPageTransformer(true, new ZoomOutPageTransformer());
-
-        locations.put(createCooverHall(), false);
-        setUpMapIfNeeded();
-
-        setupLocationListener();
-
-        //hello
     }
 
     private void setupLocationListener()
@@ -76,7 +97,6 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         // Define a listener that responds to location updates
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-
                 Toast.makeText(curActivity, "Your GPS Location:\n(" + location.getLatitude() + "," + location.getLongitude() + ")", Toast.LENGTH_LONG).show();
             }
 
@@ -93,13 +113,18 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         }
     }
 
-    private List<Fragment> getFragments() {
+    private List<Fragment> getFragments(int locationId) {
         List<Fragment> fList = new ArrayList<Fragment>();
-        fList.add(LocationImagesFragment.newInstance(R.drawable.coover_1, "A classroom in Coover Hall."));
-        fList.add(LocationImagesFragment.newInstance(R.drawable.coover_2, "Coover Hall was built in 1950."));
-        fList.add(LocationImagesFragment.newInstance(R.drawable.coover_3, "Coover Hall is home to the Department of Electrical and Computer Engineering."));
-        fList.add(LocationImagesFragment.newInstance(R.drawable.coover_4, "Coover Hall is home to many research laboratories."));
-        fList.add(LocationImagesFragment.newInstance(R.drawable.coover_5, "A student lounge space located on the 2nd floor."));
+
+        DataSource db = new DataSource(curActivity);
+        db.open();
+        CampusLocation loc = db.getCampusLocationById(locationId);
+        db.close();
+
+        for (int i = 0; i<loc.getImagesList().size(); i++)
+        {
+            fList.add(LocationImagesFragment.newInstance(loc.getImagesList().get(i), loc.getImageDescriptionList().get(i)));
+        }
         return fList;
     }
 
@@ -142,8 +167,20 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     }
 
     @Override
-    public boolean onMarkerClick(Marker marker) {
-        Toast.makeText(curActivity, marker.getTitle() + " was clicked.\nCoordinates:(" + marker.getPosition().latitude + "," + marker.getPosition().longitude + ")", Toast.LENGTH_LONG).show();
+    public boolean onMarkerClick(Marker marker)
+    {
+        CampusLocation loc = markerLatLngToLocation.get(marker.getPosition());
+
+        if(loc == null)
+        {
+            return false;
+        }
+
+        Toast.makeText(curActivity, loc.getName() + " was clicked.\nCoordinates:(" + loc.getMarkerLocation().latitude + "," + loc.getMarkerLocation().longitude + ")", Toast.LENGTH_LONG).show();
+
+        setPageViewer(loc.getId());
+
+        //Toast.makeText(curActivity, marker.getTitle() + " was clicked.\nCoordinates:(" + marker.getPosition().latitude + "," + marker.getPosition().longitude + ")", Toast.LENGTH_LONG).show();
         return false;
     }
 
@@ -163,9 +200,6 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.024220,-93.651840)).title("Helser Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.023917,-93.650437)).title("Friley Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.026163, -93.648340)).title("Beardshear Hall"));
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.025429, -93.644472)).title("Gerdin Business Building"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.026183, -93.644851)).title("Curtiss Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.026593,-93.644199)).title("Ross Hall"));
@@ -178,14 +212,11 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.028486,-93.644637)).title("Bessey Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.028374, -93.645634)).title("Palmer Building"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.028598, -93.646525)).title("MacKay Hall"));
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
-        //mMap.addMarker(new MarkerOptions().position(new LatLng(42.028358, -93.650738)).title("Coover Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.0285454, -93.647469)).title("LeBaron Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.028103, -93.647554)).title("Human Nutritional Sciences Building"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.029602,-93.643874)).title("Kildee Hall/Meats Laboratory"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.029195,-93.646342)).title("Science Hall"));
-       mMap.addMarker(new MarkerOptions().position(new LatLng(42.029390, -93.647356)).title("Physics Hall"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.029390, -93.647356)).title("Physics Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.029426, -93.648654)).title("Gilman Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.029586,-93.645634)).title("Lagomarcino Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.031056,-93.649700)).title("Molecular Biology Building"));
@@ -194,21 +225,11 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.030140, -93.649722)).title("Hach Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.030179,-93.648665)).title("Spedding Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.029550,-93.652694)).title("Town Engineering Building"));
-       mMap.addMarker(new MarkerOptions().position(new LatLng(42.029598, -93.650950)).title("Armory"));
+        mMap.addMarker(new MarkerOptions().position(new LatLng(42.029598, -93.650950)).title("Armory"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.028589, -93.653134)).title("College of Design"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(42.027814,-93.650916)).title("Sweeney Hall"));
         mMap.addMarker(new MarkerOptions().position(new LatLng(42.027448,-93.651533)).title("Nuclear Engineering Laboratory"));
- 
-    /*    mMap.addMarker(new MarkerOptions().position(new LatLng(42.030893, -93.648628)).title("Metals Development Building"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(42.030140, -93.649722)).title("Hach Hall"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(42.030179,-93.648665)).title("Spedding Hall"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(42.029550,-93.652694)).title("Town Engineering Building"));
-       mMap.addMarker(new MarkerOptions().position(new LatLng(42.029598, -93.650950)).title("Armory"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(42.028589, -93.653134)).title("College of Design"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(42.027814,-93.650916)).title("Sweeney Hall"));
-        mMap.addMarker(new MarkerOptions().position(new LatLng(42.027448,-93.651533)).title("Nuclear Engineering Laboratory"));*/
 
-        Set<CampusLocation> locationList = locations.keySet();
+        Set<CampusLocation> locationList = locationToVisited.keySet();
 
         for (CampusLocation loc : locationList)
         {
@@ -234,25 +255,35 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         }
     }
 
-    private CampusLocation createCooverHall()
-    {
-        LatLngBounds.Builder bounds = LatLngBounds.builder();
-        bounds.include(new LatLng(42.02808, -93.65027));  //Southeast corner
-        bounds.include(new LatLng(42.028847, -93.65178)); //Northwest corner
-
-        ArrayList<LatLngBounds> boundsList = new ArrayList<LatLngBounds>();
-        boundsList.add(bounds.build());
-
-        return new CampusLocation("Coover Hall", new LatLng(42.028358, -93.650738), boundsList);
-    }
+//    private CampusLocation createCooverHall()
+//    {
+//        LatLngBounds.Builder bounds = LatLngBounds.builder();
+//        bounds.include(new LatLng(42.02808, -93.65027));  //Southeast corner
+//        bounds.include(new LatLng(42.028847, -93.65178)); //Northwest corner
+//
+//        ArrayList<LatLngBounds> boundsList = new ArrayList<LatLngBounds>();
+//        boundsList.add(bounds.build());
+//
+//        return new CampusLocation("Coover Hall", new LatLng(42.028358, -93.650738), boundsList);
+//    }
 
     class DetailPageAdapter extends FragmentPagerAdapter {
 
         private List<Fragment> fragments;
 
+        private FragmentManager fragmentManager;
+
         public DetailPageAdapter (FragmentManager fm, List<Fragment> fragments) {
             super(fm);
+            this.fragmentManager = fm;
             this.fragments = fragments;
+        }
+
+        public void clearAll() //Clear all page
+        {
+            for(int i=0; i<fragments.size(); i++)
+                this.fragmentManager.beginTransaction().remove(fragments.get(i)).commit();
+            fragments.clear();
         }
 
         @Override

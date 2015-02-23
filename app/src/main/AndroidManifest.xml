@@ -24,7 +24,8 @@
         <activity
             android:name=".MapView"
             android:screenOrientation="portrait"
-            android:label="@string/title_activity_map_view" >
+            android:label="@string/title_activity_map_view"
+            android:launchMode="singleInstance">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
