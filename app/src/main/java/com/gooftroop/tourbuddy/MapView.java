@@ -84,10 +84,6 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         }
         db.close();
 
-        //Set the class used for changing the animation for sliding images on the bottom
-        pager.setPageTransformer(true, new ZoomOutPageTransformer());
-
-        locations.put(createCooverHall(), false);
         setUpMapIfNeeded();
 
         setupLocationListener();
