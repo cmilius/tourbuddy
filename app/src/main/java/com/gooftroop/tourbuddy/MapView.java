@@ -6,6 +6,7 @@ import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
 import android.location.LocationListener;
+import android.os.AsyncTask;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
@@ -96,12 +97,42 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
             locationToVisited.put(dbLocations.get(i), dbLocations.get(i).getVisited());
             markerLatLngToLocation.put(dbLocations.get(i).getMarkerLocation(), dbLocations.get(i));
         }
+
         db.close();
 
         setUpMapIfNeeded();
 
         setupLocationListener();
+
+        new VisitLocation(curActivity, dbLocations.get(0)).execute();
     }
+
+    public class VisitLocation extends AsyncTask<Void, Void, Void>
+    {
+        private Activity curActivity;
+        private CampusLocation location;
+
+        public VisitLocation(Activity curActivity, CampusLocation location)
+        {
+            this.curActivity = curActivity;
+            this.location = location;
+        }
+
+        @Override
+        protected Void doInBackground(Void... params) {
+            try
+            {
+                HttpClientHelper.visitLocation(location, curActivity);
+                return null;
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+                return null;
+            }
+        }
+    }
+
 
     private void setPageViewer(int locationId)
     {
@@ -117,6 +148,8 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
         //Set the class used for changing the animation for sliding images on the bottom
         pager.setPageTransformer(true, new ZoomOutPageTransformer());
+
+
     }
 
 
@@ -129,7 +162,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         // Define a listener that responds to location updates
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-                Toast.makeText(curActivity, "Your GPS Location:\n(" + location.getLatitude() + "," + location.getLongitude() + ")", Toast.LENGTH_LONG).show();
+                //Toast.makeText(curActivity, "Your GPS Location:\n(" + location.getLatitude() + "," + location.getLongitude() + ")", Toast.LENGTH_LONG).show();
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {}
