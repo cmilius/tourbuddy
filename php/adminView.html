@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+	<title>Admin View</title>
+	<style>
+		table, th, td {
+			border: 1px solid black;
+			border-collapse: collapse;
+		}
+		th, td {
+			padding: 5px;
+		}
+		th {
+			text-align: left;
+		}
+	</style>
+	
+	<script>
+		var populateTable = function(){
+			var table = document.getElementById("table");
+			$.getJSON("ISU_Buildings.json", function(json) {
+				for(var i = 0; i < json.length; i++){
+					var obj = json[i];
+					
+					var row = table.insertRow(-1);
+					var cell1 = row.insertCell(0);
+					var cell2 = row.insertCell(1);
+
+					cell1.innerHTML = obj["name"];
+					cell2.innerHTML = obj["visits"];
+				}
+			});
+		}
+		
+		window.onload = function() {
+			populateTable();
+		}
+	</script>
+</head>
+
+<body>
+	<div id="header" class="header">
+		<h1>ISU Building Stats</h1>
+	</div>
+	<div id="content_div">
+		<table id="table" style="width:75%">
+			<tr>
+				<th>Building Name</th>
+				<th>Total Visits</th>
+			</tr>
+		</table>
+	</div>
+</body>
+
+</html>
+

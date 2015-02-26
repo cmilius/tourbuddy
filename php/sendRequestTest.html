@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <title>Request Test</title>
+  <script>
+		var sendRequest = function(){
+			$.ajax({
+                    cache: false,
+                    type: "POST",
+                    url: "http://gala.cs.iastate.edu/~erichk/index.php",
+                    contentType: "application/json",
+                    processData: true,
+                    data: '{"type":"visit", "building_id":"1"}',
+                    success: function(res){
+						alert(res);
+                    },
+                    complete: function(XMLHttpRequest, text_status) {
+
+                    }
+                 });
+			
+			
+			/*$.post("http://gala.cs.iastate.edu/~erichk/index.php",
+			{
+				type : "visit",
+				building_id : "1"
+			},
+			function(data, status){
+				alert("Data: " + data + "\nStatus: " + status);
+			});*/
+		}
+  </script>
+</head>
+
+<body>
+	<button id="req" onclick="sendRequest()">Send Request</button>
+</body>
+
+</html>
