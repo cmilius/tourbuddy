@@ -1,7 +1,10 @@
 package com.gooftroop.tourbuddy;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
 import android.location.LocationManager;
@@ -15,6 +18,7 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.Toast;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
@@ -30,6 +34,8 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+
+import org.apache.http.HttpResponse;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -64,7 +70,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_images_layout);
 
-        setPageViewer(1);
+        setPageViewer(2);
         mDrawerItemNames = getResources().getStringArray(R.array.nav_drawer_items);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
@@ -95,7 +101,30 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         new VisitLocation(curActivity, dbLocations.get(0)).execute();
     }
 
-    public class VisitLocation extends AsyncTask<Void, Void, Void>
+    /**
+     * Returns the most likely campus location
+     * @param location
+     * @return
+     */
+    public CampusLocation getCampusLocationFromGPSLocation(Location location)
+    {
+        LatLng pinPoint = new LatLng(location.getLatitude(), location.getLongitude());
+
+        for (CampusLocation campusLoc : locationToVisited.keySet())
+        {
+            List<LatLngBounds> bounds = campusLoc.getBuildingBoundsList();
+            for (int i = 0; i<bounds.size(); i++)
+            {
+                if (bounds.get(i).contains(pinPoint))
+                {
+                    return campusLoc;
+                }
+            }
+        }
+        return null;
+    }
+
+    public class VisitLocation extends AsyncTask<Void, Void, HttpResponse>
     {
         private Activity curActivity;
         private CampusLocation location;
@@ -107,11 +136,10 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         }
 
         @Override
-        protected Void doInBackground(Void... params) {
+        protected HttpResponse doInBackground(Void... params) {
             try
             {
-                HttpClientHelper.visitLocation(location, curActivity);
-                return null;
+                return HttpClientHelper.visitLocation(location);
             }
             catch (Exception e)
             {
@@ -119,19 +147,126 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
                 return null;
             }
         }
-    }
 
+        @Override
+        protected void onPostExecute(HttpResponse result)
+        {
+            if (result == null)
+            {
+                Toast.makeText(curActivity, "Attempted to Update Server!", Toast.LENGTH_LONG).show();
+            }
+
+            if (result.getStatusLine().getStatusCode() == 200)
+            {
+                Toast.makeText(curActivity, "Updated Server!", Toast.LENGTH_LONG).show();
+            }
+        }
+    }
 
     //drawer's item click listener
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            Toast.makeText(curActivity, mDrawerItemNames[position], Toast.LENGTH_LONG).show();
+            if (position == 0)
+            {
+                centerMapOnMyLocation();
+            }
+            else if (position == 1)
+            {
+                displayCreateNoteDialog();
+            }
+            else if (position == 2)
+            {
+                Intent newIntent = new Intent(MapView.this, NoteListActivity.class);
+                startActivity(newIntent);
+            }
+            else
+            {
+                Toast.makeText(curActivity, mDrawerItemNames[position], Toast.LENGTH_LONG).show();
+            }
+
             mDrawerList.setItemChecked(position, true);
             mDrawerLayout.closeDrawer(mDrawerList);
             mDrawerList.setItemChecked(position, false);
 
         }
+    }
+
+    private void displayCreateNoteDialog()
+    {
+        AlertDialog.Builder alert = new AlertDialog.Builder(curActivity);
+
+        final CampusLocation location;
+
+        if(mMap.getMyLocation() != null)
+        {
+            location = getCampusLocationFromGPSLocation(mMap.getMyLocation());
+        }
+        else
+        {
+            location = null;
+        }
+        alert.setTitle("Create Note");
+        if (location != null)
+        {
+            alert.setMessage("My note on " + location.getName() + ":");
+        }
+        else
+        {
+            alert.setMessage("My note on Iowa State's Campus");
+        }
+
+        // Set an EditText view to get user input
+        final EditText input = new EditText(curActivity);
+        alert.setView(input);
+
+        alert.setPositiveButton("Save Note", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                String value = input.getText().toString();
+                DataSource db = null;
+                TourNote tourNote = null;
+
+                try
+                {
+                    db = new DataSource(curActivity);
+                    db.open();
+
+                    int buildingId = 0;
+
+                    if(mMap.getMyLocation() != null)
+                    {
+                        if (location != null)
+                        {
+                            buildingId = location.getId();
+                        }
+                    }
+
+                    tourNote = db.createTourNote(buildingId, value);
+                }
+                catch(Exception e)
+                {
+                    System.out.println(e.getMessage());
+                }
+                finally
+                {
+                    if (db != null)
+                    {
+                        db.close();
+                    }
+                }
+
+
+                Toast.makeText(curActivity, "Note Saved!", Toast.LENGTH_LONG).show();
+            }
+        });
+
+        alert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int whichButton) {
+                // Canceled.
+            }
+        });
+
+        alert.show();
     }
 
     private void setPageViewer(int locationId)
@@ -148,8 +283,6 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
         //Set the class used for changing the animation for sliding images on the bottom
         pager.setPageTransformer(true, new ZoomOutPageTransformer());
-
-
     }
 
     private void setupLocationListener()
@@ -182,7 +315,13 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
         if (location != null) {
             LatLng myLocation = new LatLng(location.getLatitude(),location.getLongitude());
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16.0f));
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 18.0f));
+        }
+
+        CampusLocation nearest = getCampusLocationFromGPSLocation(location);
+        if(nearest != null)
+        {
+            setPageViewer(nearest.getId());
         }
     }
 
@@ -249,7 +388,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
             return false;
         }
 
-        Toast.makeText(curActivity, loc.getName() + " was clicked.\nCoordinates:(" + loc.getMarkerLocation().latitude + "," + loc.getMarkerLocation().longitude + ")", Toast.LENGTH_LONG).show();
+        //Toast.makeText(curActivity, loc.getName() + " was clicked.\nCoordinates:(" + loc.getMarkerLocation().latitude + "," + loc.getMarkerLocation().longitude + ")", Toast.LENGTH_LONG).show();
 
         setPageViewer(loc.getId());
 
@@ -259,7 +398,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
     @Override
     public void onMapClick(LatLng latLng) {
-        Toast.makeText(curActivity, "(" + latLng.latitude + "," + latLng.longitude + ")", Toast.LENGTH_LONG).show();
+        //Toast.makeText(curActivity, "(" + latLng.latitude + "," + latLng.longitude + ")", Toast.LENGTH_LONG).show();
     }
 
     /**
@@ -327,18 +466,6 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
             }
         }
     }
-
-//    private CampusLocation createCooverHall()
-//    {
-//        LatLngBounds.Builder bounds = LatLngBounds.builder();
-//        bounds.include(new LatLng(42.02808, -93.65027));  //Southeast corner
-//        bounds.include(new LatLng(42.028847, -93.65178)); //Northwest corner
-//
-//        ArrayList<LatLngBounds> boundsList = new ArrayList<LatLngBounds>();
-//        boundsList.add(bounds.build());
-//
-//        return new CampusLocation("Coover Hall", new LatLng(42.028358, -93.650738), boundsList);
-//    }
 
     class DetailPageAdapter extends FragmentPagerAdapter {
 

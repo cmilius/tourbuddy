@@ -11,6 +11,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.text.TextUtils;
 
+import com.google.android.gms.internal.bu;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
@@ -21,7 +22,11 @@ import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_LOCATION_BUIL
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_LOCATION_BACKGROUND;
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_LOCATION_IMAGES_AND_DESCRIPTIONS;
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_LOCATION_VISITED;
+import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_NOTE_BUILDING_ID;
+import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_NOTE_ID;
+import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_NOTE_STRING;
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.TABLE_LOCATIONS;
+import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.TABLE_NOTES;
 
 
 import java.math.BigDecimal;
@@ -43,6 +48,9 @@ public class DataSource {
             COLUMN_LOCATION_BUILDING_BOUNDS, COLUMN_LOCATION_BACKGROUND,
             COLUMN_LOCATION_IMAGES_AND_DESCRIPTIONS, COLUMN_LOCATION_VISITED };
 
+    private static final String[] allNotesColumns = {
+            COLUMN_NOTE_ID, COLUMN_NOTE_BUILDING_ID, COLUMN_NOTE_STRING};
+
     public DataSource(Context curContext) {
         dbHelper = new TourBuddySQLiteHelper(curContext);
     }
@@ -56,6 +64,65 @@ public class DataSource {
         dbHelper.close();
     }
 
+    public TourNote createTourNote(int buildingId, String note) {
+        long insertId = 0;
+        ContentValues values = new ContentValues();
+        values.put(COLUMN_NOTE_BUILDING_ID, buildingId);
+        values.put(COLUMN_NOTE_STRING, note);
+
+        insertId = database.insert(TABLE_NOTES, null, values);
+        Cursor cursor = database.query(TABLE_NOTES, allNotesColumns, COLUMN_NOTE_ID + " = '" + insertId + "'", null, null, null, null);
+        if (!cursor.moveToFirst())
+        {
+            cursor.close();
+            return null;
+        }
+        TourNote tourNote = cursorToTourNote(cursor);
+        cursor.close();
+        return tourNote;
+    }
+
+    public ArrayList<TourNote> getAllNotes()  {
+        ArrayList<TourNote> notes = new ArrayList<TourNote>();
+
+        Cursor cursor = database.query(TABLE_NOTES, allNotesColumns, null, null, null, null, null);
+
+        if (!cursor.moveToFirst())
+        {
+            cursor.close();
+            return notes;
+        }
+
+        while (!cursor.isAfterLast()) {
+            TourNote note = cursorToTourNote(cursor);
+            notes.add(note);
+            cursor.moveToNext();
+        }
+
+        // make sure to close the cursor
+        cursor.close();
+        return notes;
+    }
+
+    public TourNote getTourNoteById(int id) {
+        Cursor cursor = database.query(TABLE_NOTES, allNotesColumns, COLUMN_NOTE_ID + " = '" + id +"'", null, null, null, null);
+        if(!cursor.moveToFirst())
+        {
+            cursor.close();
+            return null;
+        }
+        TourNote note = cursorToTourNote(cursor);
+        cursor.close();
+        return note;
+    }
+
+    private TourNote cursorToTourNote(Cursor cursor) {
+        int id = cursor.getInt(0);
+        int buildingId = cursor.getInt(1);
+        String note = cursor.getString(2);
+
+        return new TourNote(id, buildingId, note);
+    }
 
     public CampusLocation createCampusLocation(CampusLocation loc)
     {
@@ -156,6 +223,7 @@ public class DataSource {
         cursor.close();
         return loc;
     }
+
     private CampusLocation cursorToCampusLocation(Cursor cursor) {
         int id = cursor.getInt(0);
         String name = cursor.getString(1);

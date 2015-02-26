@@ -23,6 +23,12 @@ public class TourBuddySQLiteHelper extends SQLiteOpenHelper {
     public static final String COLUMN_LOCATION_IMAGES_AND_DESCRIPTIONS = "imagesDescriptions";
     public static final String COLUMN_LOCATION_VISITED = "visited";
 
+    public static final String TABLE_NOTES = "notes";
+    public static final String COLUMN_NOTE_ID = "_id";
+    public static final String COLUMN_NOTE_BUILDING_ID = "building_id";
+    public static final String COLUMN_NOTE_STRING = "notesStr";
+
+
     private static final String DATABASE_NAME = "tourbuddy.db";
     private static final int DATABASE_VERSION = 1;
 
@@ -33,13 +39,19 @@ public class TourBuddySQLiteHelper extends SQLiteOpenHelper {
 
     private static final String DATABASE_CREATE_LOCATIONS_TABLE = "create table "
             + TABLE_LOCATIONS + "("
-            + COLUMN_LOCATION_ID + " integer primary key, "
+            + COLUMN_LOCATION_ID + " integer primary key autoincrement, "
             + COLUMN_LOCATION_NAME + " text not null, "
             + COLUMN_LOCATION_MARKER_COORDINATES + " text not null, "
             + COLUMN_LOCATION_BUILDING_BOUNDS + " text not null, "
             + COLUMN_LOCATION_BACKGROUND + " text not null, "
             + COLUMN_LOCATION_IMAGES_AND_DESCRIPTIONS + " text not null, "
             + COLUMN_LOCATION_VISITED + " integer not null);";
+
+    private static final String DATABASE_CREATE_NOTES_TABLE = "create table "
+            + TABLE_NOTES + "("
+            + COLUMN_NOTE_ID + " integer primary key, "
+            + COLUMN_NOTE_BUILDING_ID + " integer not null, "
+            + COLUMN_NOTE_STRING + " text not null);";
 
     public TourBuddySQLiteHelper(Context context)
     {
@@ -53,9 +65,14 @@ public class TourBuddySQLiteHelper extends SQLiteOpenHelper {
         //Create the locations table
         database.execSQL(DATABASE_CREATE_LOCATIONS_TABLE);
 
+        //Create the notes table
+        database.execSQL(DATABASE_CREATE_NOTES_TABLE);
+
         createCoover(database);
         createSweeney(database);
         createAtanasoff(database);
+
+        createHoover(database);
     }
 
     private void createSweeney(SQLiteDatabase database)
@@ -95,12 +112,12 @@ public class TourBuddySQLiteHelper extends SQLiteOpenHelper {
         String background = "Coover Hall was built in 1950 and is home to the Department of Electrical and Computer Engineering.";
         ArrayList<Integer> images = new ArrayList<Integer>();
         ArrayList<String> imageDesc = new ArrayList<String>();
-        images.add(R.drawable.coover_1);
+        images.add(R.drawable.coover_3);
+        imageDesc.add("Coover Hall is home to the Department of Electrical and Computer Engineering.");
+        images.add(R.drawable.coover_10);
         imageDesc.add("A classroom in Coover Hall.");
         images.add(R.drawable.coover_2);
         imageDesc.add("Coover Hall was built in 1950.");
-        images.add(R.drawable.coover_3);
-        imageDesc.add("Coover Hall is home to the Department of Electrical and Computer Engineering.");
         images.add(R.drawable.coover_4);
         imageDesc.add("Coover Hall is home to many research laboratories.");
         images.add(R.drawable.coover_5);
@@ -129,6 +146,27 @@ public class TourBuddySQLiteHelper extends SQLiteOpenHelper {
         images.add(R.drawable.atanasoff_4);
         imageDesc.add("John Vincent Atanasoff was co-inventor of the first digital computer (the ABC), along with Clifford Berry. In honor of Mr. Atanasoff, the building bearing his name is designed to look like a microchip.");
         createCampusLocation(database, 3, name, marker, bounds, background, images, imageDesc, false);
+    }
+
+    private void createHoover(SQLiteDatabase database)
+    {
+        String name = "Hoover Hall";
+        LatLng marker = new LatLng(42.026644,-93.651058);
+        ArrayList<LatLngBounds> bounds = new ArrayList<LatLngBounds>();
+        LatLngBounds.Builder bound = new LatLngBounds.Builder();
+        bound.include(new LatLng(42.026814, -93.651836))
+                .include(new LatLng(42.026513, -93.650390));
+        bounds.add(bound.build());
+        String background = "Hoover Hall has the offices for the Department of Chemical Engineering";
+        ArrayList<Integer> images = new ArrayList<Integer>();
+        ArrayList<String> imageDesc = new ArrayList<String>();
+        images.add(R.drawable.hoover_1);
+        imageDesc.add("Hoover Hall was constructed in 2004, and connects with Howe Hall through a sky bridge.");
+        images.add(R.drawable.hoover_2);
+        imageDesc.add("Hoover was named after Gary and Donna Hoover, ISU graduates from 1961.");
+        images.add(R.drawable.hoover_3);
+        imageDesc.add("Odds are, this is where you'll have your first Chemistry lectures!");
+        createCampusLocation(database, 6, name, marker, bounds, background, images, imageDesc, false);
     }
 
     public void createCampusLocation(SQLiteDatabase database, int id, String name, LatLng markerLocation, List<LatLngBounds> buildingBoundsList, String backgroundInfo, List<Integer> imagesList, List<String> imageDescriptionList, boolean visited) {

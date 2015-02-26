@@ -30,7 +30,7 @@ import java.util.List;
  */
 public class HttpClientHelper {
 
-    public static void visitLocation(CampusLocation location, Context curContext)
+    public static HttpResponse visitLocation(CampusLocation location)
     {
         try
         {
@@ -41,34 +41,18 @@ public class HttpClientHelper {
             JSONObject req = new JSONObject();
             req.put("building_id", 1);
             req.put("type", "visit");
-            httpPostJSON(req, "http://gala.cs.iastate.edu/~erichk/index.php", curContext);
+            return httpPostJSON(req, "http://gala.cs.iastate.edu/~erichk/index.php");
             //httpPostJSON();
             //httpPost(nameValuePairs, "http://gala.cs.iastate.edu/~erichk/index.php", curContext);
         }
         catch (Exception e)
         {
             System.out.println(e.getMessage());
+            return null;
         }
     }
 
-    public static void httpPost(List<NameValuePair> nameValuePairs, String url, Context curContext) throws Exception {
-        DefaultHttpClient httpclient = new DefaultHttpClient();
-
-        HttpPost httpost = new HttpPost(url);
-
-        httpost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-
-        //Set the http post headers
-        //httpost.setHeader("Accept", "application/json");
-        //httpost.setHeader("Content-type", "application/json");
-
-        //Handles what is returned from the page
-        HttpResponse response = httpclient.execute(httpost);
-
-        Toast.makeText(curContext, "Response code:" + response.getStatusLine().getStatusCode(), Toast.LENGTH_LONG).show();
-    }
-
-    public static void httpPostJSON(JSONObject req, String url, Context curContext) throws Exception
+    public static HttpResponse httpPostJSON(JSONObject req, String url) throws Exception
     {
         DefaultHttpClient httpclient = new DefaultHttpClient();
 
@@ -87,9 +71,22 @@ public class HttpClientHelper {
         httpPost.setHeader("Content-type", "application/json; charset=utf-8");
 
         //Handles what is returned from the page
-        ResponseHandler<String> responseHandler = new BasicResponseHandler();
         HttpResponse response = httpclient.execute(httpPost);
-
-        Toast.makeText(curContext, "Response code:" + response.getStatusLine().getStatusCode(), Toast.LENGTH_LONG).show();
+        return response;
     }
+
+//    public static void httpPost(List<NameValuePair> nameValuePairs, String url, Context curContext) throws Exception {
+//        DefaultHttpClient httpclient = new DefaultHttpClient();
+//
+//        HttpPost httpost = new HttpPost(url);
+//
+//        httpost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
+//
+//        //Handles what is returned from the page
+//        HttpResponse response = httpclient.execute(httpost);
+//
+//        Toast.makeText(curContext, "Response code:" + response.getStatusLine().getStatusCode(), Toast.LENGTH_LONG).show();
+//    }
+
+
 }
