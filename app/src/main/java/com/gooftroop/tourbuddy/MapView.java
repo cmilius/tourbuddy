@@ -72,21 +72,9 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, mDrawerItemNames));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView parent, View view, int position, long id) {
-                if (position == 0)
-                {
-                    centerMapOnMyLocation();
-                }
-                else if (position == 1)
-                {
 
-                }
-            }
-        });
+        // Set the list's click listener
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         DataSource db = new DataSource(curActivity);
         db.open();
@@ -134,6 +122,18 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     }
 
 
+    //drawer's item click listener
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            Toast.makeText(curActivity, mDrawerItemNames[position], Toast.LENGTH_LONG).show();
+            mDrawerList.setItemChecked(position, true);
+            mDrawerLayout.closeDrawer(mDrawerList);
+            mDrawerList.setItemChecked(position, false);
+
+        }
+    }
+
     private void setPageViewer(int locationId)
     {
         ViewPager pager = (ViewPager) findViewById(R.id.viewpager);
@@ -151,8 +151,6 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
 
     }
-
-
 
     private void setupLocationListener()
     {
