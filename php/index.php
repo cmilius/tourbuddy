@@ -4,18 +4,19 @@ header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
 //$data = json_decode(file_get_contents('php://input'), true);
-echo file_get_contents('php://input');
-/*$req_type = ($_POST["type"]);
+$input = file_get_contents('php://input');
+$json = json_decode($input, true);
+$req_type = $json["type"];
 
 if($req_type == "info"){
-	$buildingID = ($_POST["building_id"]);
+	$buildingID = $json["building_id"];
 	$data = getInfo($buildingID);
 	echo $data;
 }
 else if($req_type == "visit"){
-	$buildingID = ($_POST["building_id"]);
+	$buildingID = $json["building_id"];
 	updateVisits($buildingID);
-}*/
+}
 
 
 function getInfo($buildingID){
