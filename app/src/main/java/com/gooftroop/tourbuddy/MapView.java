@@ -12,13 +12,14 @@ import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Toast;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ListView;
 import android.widget.ArrayAdapter;
 
 
-import com.gooftroop.tourbuddy.R;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.model.LatLngBounds;
@@ -47,7 +48,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
      */
     private HashMap<CampusLocation, Boolean> locationToVisited = new HashMap<CampusLocation, Boolean>();
 
-    private String[] mPlanetTitles;
+    private String[] mDrawerItemNames;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
 
@@ -63,15 +64,28 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         setContentView(R.layout.main_activity_images_layout);
 
         setPageViewer(1);
-        mPlanetTitles = getResources().getStringArray(R.array.nav_drawer_items);
+        mDrawerItemNames = getResources().getStringArray(R.array.nav_drawer_items);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, mPlanetTitles));
+                R.layout.drawer_list_item, mDrawerItemNames));
         // Set the list's click listener
-        //mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+        mDrawerList.setOnItemClickListener(new ListView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView parent, View view, int position, long id) {
+                if (position == 0)
+                {
+                    centerMapOnMyLocation();
+                }
+                else if (position == 1)
+                {
+
+                }
+            }
+        });
 
         DataSource db = new DataSource(curActivity);
         db.open();
@@ -92,8 +106,6 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     private void setPageViewer(int locationId)
     {
         ViewPager pager = (ViewPager) findViewById(R.id.viewpager);
-//        pager.removeAllViews();
-//        pager.setAdapter(null);
 
         List<Fragment> fragments = getFragments(locationId);
 
@@ -130,6 +142,16 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         if (locationManager != null)
         {
             locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 1000, 0, locationListener);
+        }
+    }
+
+    private void centerMapOnMyLocation()
+    {
+        Location location = mMap.getMyLocation();
+
+        if (location != null) {
+            LatLng myLocation = new LatLng(location.getLatitude(),location.getLongitude());
+            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(myLocation, 16.0f));
         }
     }
 
