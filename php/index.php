@@ -3,8 +3,8 @@
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
-//$data = json_decode(file_get_contents('php://input'), true);
 $input = file_get_contents('php://input');
+logInputs($input);
 $json = json_decode($input, true);
 $req_type = $json["type"];
 
@@ -47,6 +47,18 @@ function updateVisits($buildingID) {
     }
 	
 	file_put_contents('ISU_Buildings.json', json_encode($data));
+}
+
+function logInputs($input){
+	//file_put_contents('log.txt', $input);
+	$date = date('m/d/Y h:i:s a', time());
+	$myFile = "log.txt";
+	$fh = fopen($myFile, 'a');
+	fwrite($fh, $date);
+	fwrite($fh, " : ");
+	fwrite($fh, $input);
+	fwrite($fh, "\n");
+	fclose($fh);
 }
 
 ?>
