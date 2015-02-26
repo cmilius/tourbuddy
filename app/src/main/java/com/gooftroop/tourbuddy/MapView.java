@@ -70,6 +70,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_images_layout);
 
+        //Initialize to Sweeney for App Demo
         setPageViewer(3);
         mDrawerItemNames = getResources().getStringArray(R.array.nav_drawer_items);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
