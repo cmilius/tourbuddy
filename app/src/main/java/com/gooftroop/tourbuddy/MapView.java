@@ -65,6 +65,10 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
     private int curLocation = 0;
 
+    private int counter = 0;
+
+    private CampusLocation previous = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -294,7 +298,24 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         // Define a listener that responds to location updates
         LocationListener locationListener = new LocationListener() {
             public void onLocationChanged(Location location) {
-                //Toast.makeText(curActivity, "Your GPS Location:\n(" + location.getLatitude() + "," + location.getLongitude() + ")", Toast.LENGTH_LONG).show();
+
+                CampusLocation current = getCampusLocationFromGPSLocation(location);
+
+                //If previous or current is null, set counter to 0
+                if (previous == null || current == null)
+                {
+                    previous = current;
+                    counter = 0;
+                    return;
+                }
+
+                counter++;
+
+                if (counter == 3)
+                {
+                    Toast.makeText(curActivity, "Welcome to " + current.getName() + "!", Toast.LENGTH_LONG).show();
+                    setPageViewer(current.getId());
+                }
             }
 
             public void onStatusChanged(String provider, int status, Bundle extras) {}
