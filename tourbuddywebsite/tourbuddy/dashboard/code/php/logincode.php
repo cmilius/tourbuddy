@@ -65,7 +65,7 @@ function checkLoginInfo($email, $userPassword)
 	}
 	
 	$sql = "SELECT firstname, lastname, email, password FROM users where email='$email' and password='$userPassword' ";
-	echo ("OK");
+	
 	$result = mysqli_query($conn, $sql);
 
 	if (!$result || mysqli_num_rows($result) <= 0) {

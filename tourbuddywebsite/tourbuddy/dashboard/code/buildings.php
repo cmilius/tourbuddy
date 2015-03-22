@@ -176,8 +176,10 @@
 	      		<div class="widget">
 						
 					<div class="widget-header">
+					
 						<i class="icon-th-large"></i>
 						<h3>Select a Building To Edit</h3>
+					
 					</div> <!-- /widget-header -->
 					
 					<div class="widget-content">
@@ -209,7 +211,10 @@
 								//echo '<p><center><input type = "submit" action="editbuildinginfo.php" value="Edit" method="GET" class="btn btn-primary"></input></center></p>';
 								echo '<form action="editbuildinginfo.php" method="post">';
 								echo '<input type="hidden" id="id" name="id" value="'.$row['id'].'">';
-								echo '<p><center><input type="submit" value="Edit" 
+								echo '<input type="hidden" id="name" name="name" value="'.$row['name'].'">';
+								echo '<input type="hidden" id="description" name="description" value="'.$row['description'].'">';
+								echo '<input type="hidden" id="image_location" name="image_location" value="'.$row['image_location'].'">';
+								echo '<p><center><input type="submit" value="View/Edit" 
 									name="Edit" id="frm1_edit" class="btn btn-primary" </center></p>';
 								echo '</form>';
 								echo '</div>';
