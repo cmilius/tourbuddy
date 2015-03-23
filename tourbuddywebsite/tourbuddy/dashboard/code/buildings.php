@@ -37,7 +37,7 @@
 <body>
 		<?php
 			
-			$conn = new mysqli("localhost", "root", "", "SlamminJammins");
+			$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
             
             $query = "SELECT * from buildings";
 			$result = mysqli_query($conn, $query);
