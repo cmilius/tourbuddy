@@ -7,9 +7,8 @@
 
 
 $servername="localhost";
-$username="root";
-//$password="xaBre3ta";
-$password="";
+$username="SlamminJammins";
+$password="xaBre3ta";
 $dbname="SlamminJammins";
 
 //Create connection

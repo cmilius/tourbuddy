@@ -26,19 +26,18 @@ if(!checkLoginInfo($email, $password))
 	header("Location:../login.php");
 	return false;
 }
+	session_start();
+	$logged = false;
+	$username = strtok($email, '@');
 
-session_start();
-$logged = false;
-$username = strtok($email, '@');
+	$_SESSION['username'] = $username;
+	$_SESSION['email'] = $email;
+	$_SESSION['logged'] = true;
+	$_SESSION['firstname'] = $firstname;
+	$_SESSION['lastname'] = $lastname;
+	header("Location:../dashboard.php");
 
-$_SESSION['username'] = $username;
-$_SESSION['email'] = $email;
-$_SESSION['logged'] = true;
-$_SESSION['firstname'] = $firstname;
-$_SESSION['lastname'] = $lastname;
-header("Location:../dashboard.php");
-
-return true;
+	//return true;
 
 function clean_input($data)
 {
@@ -50,15 +49,17 @@ function clean_input($data)
 
 function checkLoginInfo($email, $userPassword)
 {
+	
 	$servername = "localhost";
-	$username = "root";
-	$dbPassword="";
+	$username = "SlamminJammins";
+	$dbPassword="xaBre3ta";
 	$dbname="SlamminJammins";
-
+	
+	
 	global $firstname, $lastname;
 	//Create Connection
 	$conn = new mysqli($servername, $username, $dbPassword, $dbname);
-
+	
 	//Check connection
 	if($conn->connect_error){
 		die("Connection failed: " . $conn->connect_error);
@@ -77,7 +78,6 @@ function checkLoginInfo($email, $userPassword)
 	 $row = mysqli_fetch_assoc($result);
 	 $firstname = $row['firstname'];
 	 $lastname = $row['lastname'];
-		//echo "0 results";
 		
 		
 	}
