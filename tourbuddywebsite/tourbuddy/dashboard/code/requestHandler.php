@@ -1,11 +1,11 @@
 <?php
-$v_num = 0;
+$v_num = 0; //SAVE THIS ELSEWHERE??
 
 //Http POST body: {"type"={update, visit},"building_id"="xxxxx","version"=xxxxx"}
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
-/*$input = file_get_contents('php://input');
+$input = file_get_contents('php://input');
 logInputs($input);
 $json = json_decode($input, true);
 $req_type = $json["type"];
@@ -20,10 +20,11 @@ if($req_type == "update"){
 else if($req_type == "visit"){
 	$buildingID = $json["building_id"];
 	updateVisits($buildingID);
-}*/
+}
 
-updateVisits(1);
-sendUpdate(1);
+//FOR DEBUGGING
+//updateVisits(1);
+//sendUpdate(1);
 
 function updateVisits($buildingID) {
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
@@ -38,13 +39,13 @@ function sendUpdate($buildingID){
 	
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
 		
-	$query = "SELECT * from buildings where id='".$buildingid."'";
+	$query = "SELECT * from buildings where id='".$buildingID."'";
 	$result = mysqli_query($conn, $query);
 	$rows = array();
 	while($r = mysqli_fetch_assoc($result)){
 		$rows[] = $r;
 	}
-	$json = json_encode($rows);
+	$json = json_encode($rows, true);
 	$conn->close();
 	echo $json;
 	
