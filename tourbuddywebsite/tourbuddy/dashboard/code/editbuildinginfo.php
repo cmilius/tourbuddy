@@ -14,7 +14,7 @@
   
 <head>
     <meta charset="utf-8">
-    <title>Edit Info - Tour Buddy Admin</title>
+    <title>Edit Info - TourBuddy Admin</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">    
@@ -64,24 +64,12 @@
 			</a>
 			
 			<a class="brand" href="dashboard.php">
-				Tour Buddy Admin				
+				TourBuddy Admin				
 			</a>		
-			
+
 			<div class="nav-collapse">
 				<ul class="nav pull-right">
-					<li class="dropdown">						
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-cog"></i>
-							Account
-							<b class="caret"></b>
-						</a>
-						
-						<ul class="dropdown-menu">
-							<li><a href="javascript:;">Settings</a></li>
-							<li><a href="javascript:;">Help</a></li>
-						</ul>						
-					</li>
-			
+					
 					<li class="dropdown">						
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<i class="icon-user"></i> 
@@ -90,15 +78,13 @@
 						</a>
 						
 						<ul class="dropdown-menu">
-							<li><a href="javascript:;">Profile</a></li>
+							
 							<li><a href="php/logout.php">Logout</a></li>
 						</ul>						
 					</li>
 				</ul>
 			
-				<form class="navbar-search pull-right">
-					<input type="text" class="search-query" placeholder="Search">
-				</form>
+				
 				
 			</div><!--/.nav-collapse -->	
 	
