@@ -154,6 +154,8 @@
 	<div class="main-inner">
 
 	    <div class="container">
+		
+		
 	
 	      <div class="row">
 	      	
@@ -170,6 +172,12 @@
 					
 					<div class="widget-content">
 					
+					<div class="span12">
+						<a href="addbuilding.php"><button type="submit" class="btn btn-primary">Add a New Building</button></a>
+						<br>
+						<br>
+					</div>
+					
 						<!--<div class="span3">
 								<div class="thumbnail">
 									<img src="" alt="...">
@@ -180,9 +188,7 @@
 									</div>
 								</div>
 						</div>-->
-						
-
-						
+					
 						<?PHP
 							while($row = mysqli_fetch_assoc($result))
 							{
@@ -209,9 +215,6 @@
 								
 							
 							}
-							
-								
-						
 						?>
 						
 						
