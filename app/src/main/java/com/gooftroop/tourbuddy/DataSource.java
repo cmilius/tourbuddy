@@ -59,7 +59,7 @@ public class DataSource {
         database = dbHelper.getWritableDatabase();
         dbHelper.onUpgrade(database, 1, 1);
     }
-    //Test comment
+    //Test comment comment
     public void close() {
         dbHelper.close();
     }
