@@ -14,6 +14,7 @@
 	
 	if($result === TRUE)
 	{
+		updateVersionNumber($conn);
 		header("Location:../buildings.php");
 	}
 	echo("ok");
@@ -25,6 +26,11 @@
 	$data = stripslashes($data);
 	$data = htmlspecialchars($data);
 	return $data;
+	}
+	
+	function updateVersionNumber($conn){
+		$sql = "UPDATE version_number SET version = version + 1";
+		$result = mysqli_query($conn, $sql);
 	}
 
 ?>

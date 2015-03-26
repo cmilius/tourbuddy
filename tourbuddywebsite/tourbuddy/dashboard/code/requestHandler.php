@@ -1,5 +1,4 @@
 <?php
-$v_num = 0; //SAVE THIS ELSEWHERE??
 
 //Http POST body: {"type"={update, visit},"building_id"="xxxxx","version"=xxxxx"}
 header("Access-Control-Allow-Origin: *");
@@ -11,8 +10,9 @@ $json = json_decode($input, true);
 $req_type = $json["type"];
 
 if($req_type == "update"){
-	$version = $json["version"];
-	if($version < 100){
+	$app_version = $json["version"];
+	$version = getAppVersion();
+	if($app_version < $version){
 		$buildingID = $json["building_id"];
 		sendUpdate($buildingID);
 	}
@@ -25,6 +25,21 @@ else if($req_type == "visit"){
 //FOR DEBUGGING
 //updateVisits(1);
 //sendUpdate(1);
+//$test = getAppVersion();
+//echo $test;
+
+function getAppVersion(){
+	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
+	
+	$query = "SELECT * FROM version_number";
+	//$result = mysqli_query($conn, $query);
+	//$var = (int)$result['version'];
+	$result = $conn->query($query);
+
+	$row = $result->fetch_assoc();
+	$conn->close();
+	return $row["version"];
+}
 
 function updateVisits($buildingID) {
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
