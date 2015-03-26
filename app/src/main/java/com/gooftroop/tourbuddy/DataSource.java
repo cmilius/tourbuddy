@@ -55,6 +55,7 @@ public class DataSource {
         dbHelper = new TourBuddySQLiteHelper(curContext);
     }
 
+    //Constructor
     public void open() throws SQLException {
         database = dbHelper.getWritableDatabase();
         dbHelper.onUpgrade(database, 1, 1);
