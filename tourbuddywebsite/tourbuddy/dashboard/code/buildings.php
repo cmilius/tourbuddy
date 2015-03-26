@@ -57,24 +57,12 @@
 			</a>
 			
 			<a class="brand" href="dashboard.php">
-				Tour Buddy Admin				
+				TourBuddy Admin				
 			</a>		
 			
 			<div class="nav-collapse">
 				<ul class="nav pull-right">
-					<li class="dropdown">						
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-cog"></i>
-							Account
-							<b class="caret"></b>
-						</a>
-						
-						<ul class="dropdown-menu">
-							<li><a href="javascript:;">Settings</a></li>
-							<li><a href="javascript:;">Help</a></li>
-						</ul>						
-					</li>
-			
+					
 					<li class="dropdown">						
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
 							<i class="icon-user"></i> 
@@ -83,15 +71,13 @@
 						</a>
 						
 						<ul class="dropdown-menu">
-							<li><a href="javascript:;">Profile</a></li>
+							
 							<li><a href="php/logout.php">Logout</a></li>
 						</ul>						
 					</li>
 				</ul>
 			
-				<form class="navbar-search pull-right">
-					<input type="text" class="search-query" placeholder="Search">
-				</form>
+				
 				
 			</div><!--/.nav-collapse -->	
 	
@@ -168,6 +154,8 @@
 	<div class="main-inner">
 
 	    <div class="container">
+		
+		
 	
 	      <div class="row">
 	      	
@@ -184,6 +172,12 @@
 					
 					<div class="widget-content">
 					
+					<div class="span12">
+						<a href="addbuilding.php"><button type="submit" class="btn btn-primary">Add a New Building</button></a>
+						<br>
+						<br>
+					</div>
+					
 						<!--<div class="span3">
 								<div class="thumbnail">
 									<img src="" alt="...">
@@ -194,9 +188,7 @@
 									</div>
 								</div>
 						</div>-->
-						
-
-						
+					
 						<?PHP
 							while($row = mysqli_fetch_assoc($result))
 							{
@@ -223,9 +215,6 @@
 								
 							
 							}
-							
-								
-						
 						?>
 						
 						

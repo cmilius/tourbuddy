@@ -10,7 +10,7 @@
   
 <head>
     <meta charset="utf-8">
-    <title>Login - Tour Buddy Admin</title>
+    <title>Login - TourBuddy Admin</title>
 
 	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes"> 
@@ -41,7 +41,7 @@
 			</a>
 			
 			<a class="brand" href="../../index.html">
-				Tour Buddy Admin Login				
+				TourBuddy Admin Login				
 			</a>		
 			
 			<div class="nav-collapse">
