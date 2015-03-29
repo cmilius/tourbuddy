@@ -1,4 +1,11 @@
 <?PHP
+
+	session_start();
+	if(!isset($_SESSION['logged']) || $_SESSION['logged'] != true)
+	{
+		header("Location:login.php");
+	}
+	
 	var_dump($_POST);
 	include("databaseconnection.php");
 
