@@ -11,7 +11,7 @@
   
 <head>
     <meta charset="utf-8">
-    <title>Edit Info - Tour Buddy Admin</title>
+    <title>Edit Info - TourBuddy Admin</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">    
@@ -155,8 +155,6 @@
 
 	    <div class="container">
 		
-		
-	
 	      <div class="row">
 	      	
 	      	<div class="span12">
@@ -164,7 +162,6 @@
 	      		<div class="widget">
 						
 					<div class="widget-header">
-					
 						<i class="icon-th-large"></i>
 						<h3>Add A Building </h3>
 					
@@ -172,34 +169,39 @@
 					
 					<div class="widget-content">
 					
-					<div class="span6">
+					<div class="span4">
+								<div class="thumbnail">
+									<img id="blah" src="#" alt="Upload a Default Image" />
+								</div>
+								<br>
+					</div>
+					
+					<div class="span4">
 					
 					
-						<form role="form">
+						<form role="form" action="php/addBuildingtoDB.php" method="POST" enctype="multipart/form-data">
 							<div class="form-group">
 								<label for="buildingName">Building Name</label>
-								<input type="text" class="form-control" id="buildingName" placeholder="Enter the Building Name">
+								<input type="text" class="form-control" name="buildingName" id="buildingName" placeholder="Enter the Building Name">
 							</div>
   
 							<div class="form-group">
 								<label for="buildingDescription">Building Description</label>
-								<input type="password" class="form-control" id="buildingDescription" placeholder="Enter a Description">
+								<textarea rows="4" class="form-control" name="buildingDescription" id="buildingDescription" placeholder="Enter a Description"></textarea>
 							</div>
 							
 							<div class="form-group">
 								<label for="fileUpload">Picture Upload</label>
-								<input type="file" id="exampleInputFile">
-								<p class="help-block">Example block-level help text here.</p>
+								<input type="file" name="fileToUpload" id="fileUpload">
+								
+								<p class="help-block">Upload A Default Picture for this building.  You will be able to add more pictures later.</p>
 							</div>
-						<div class="checkbox">
-							<label>
-							<input type="checkbox"> Check me out
-							</label>
-						</div>
+					
 							<button type="submit" class="btn btn-default">Submit</button>
 					</form>
 					
 					</div>
+					
 						
 						
 						
@@ -282,6 +284,29 @@
 
 <script src="js/bootstrap.js"></script>
 <script src="js/base.js"></script>
+
+<script>
+ function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#blah').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+			
+        }
+
+}
+
+$("#fileUpload").change(function(){
+    readURL(this);
+	
+});
+
+
+</script>
 
   </body>
 
