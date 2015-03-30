@@ -7,35 +7,36 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Location;
-import android.location.LocationManager;
 import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.EditText;
-import android.widget.Toast;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ListView;
 import android.widget.ArrayAdapter;
-
+import android.widget.EditText;
+import android.widget.ListView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.apache.http.HttpResponse;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -68,6 +69,10 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     private int counter = 0;
 
     private CampusLocation previous = null;
+    //Holds two campus locations
+    private CampusLocation[] directionHolder = new CampusLocation[]{null, null};
+    //current polyline direction holder
+    private Polyline polyline;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -409,19 +414,140 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         {
             return false;
         }
-
+        addToDirectionHolder(loc);
         //Toast.makeText(curActivity, loc.getName() + " was clicked.\nCoordinates:(" + loc.getMarkerLocation().latitude + "," + loc.getMarkerLocation().longitude + ")", Toast.LENGTH_LONG).show();
+        //Toast.makeText(curActivity, "Location holder one: " + directionHolder[0].getName(), Toast.LENGTH_LONG).show();
+
+        //draw directions only if two markers have been selected
+        if(directionHolder[0] != null && directionHolder[1] != null)
+            drawDirections();
 
         setPageViewer(loc.getId());
 
+
         //Toast.makeText(curActivity, marker.getTitle() + " was clicked.\nCoordinates:(" + marker.getPosition().latitude + "," + marker.getPosition().longitude + ")", Toast.LENGTH_LONG).show();
         return false;
+    }
+    //create a new readtask and draw the directions on the map
+    private void drawDirections(){
+        String url = getMapsApiDirectionsUrl();
+        ReadTask downloadTask = new ReadTask();
+        downloadTask.execute(url);
+    }
+
+    private String getMapsApiDirectionsUrl(){
+        String origin = "origin=" + directionHolder[0].getMarkerLocation().latitude + "," +
+               directionHolder[0].getMarkerLocation().longitude;
+        String dest = "destination=" + directionHolder[1].getMarkerLocation().latitude + "," +
+                directionHolder[1].getMarkerLocation().longitude;
+        String sensor = "sensor=false";
+        String params = origin + "&" + dest + "&" + sensor;
+        String output = "json";
+       // String key = "key=AIzaSyB-J8aIitC_4FDb2ejV0iQCk6PYhFmbl8E";
+        String url = "https://maps.googleapis.com/maps/api/directions/"
+                + output + "?" + params + "&" +"mode=walking";
+        return url;
+    }
+
+
+    private class ReadTask extends AsyncTask<String, Void, String> {
+        @Override
+        protected String doInBackground(String... url) {
+            String data = "";
+            try {
+                HttpClientHelper http = new HttpClientHelper();
+                data = http.readUrl(url[0]);
+            } catch (Exception e) {
+                Log.d("Background Task", e.toString());
+            }
+            return data;
+        }
+
+        @Override
+        protected void onPostExecute(String result) {
+            super.onPostExecute(result);
+            new ParserTask().execute(result);
+        }
+    }
+
+    private class ParserTask extends
+            AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+
+        @Override
+        protected List<List<HashMap<String, String>>> doInBackground(
+                String... jsonData) {
+
+            JSONObject jObject;
+            List<List<HashMap<String, String>>> routes = null;
+
+            try {
+                jObject = new JSONObject(jsonData[0]);
+                PathJSONParser parser = new PathJSONParser();
+                routes = parser.parse(jObject);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return routes;
+        }
+
+        @Override
+        protected void onPostExecute(List<List<HashMap<String, String>>> routes) {
+            ArrayList<LatLng> points = null;
+            PolylineOptions polyLineOptions = null;
+
+            // traversing through routes
+            for (int i = 0; i < routes.size(); i++) {
+                points = new ArrayList<LatLng>();
+                polyLineOptions = new PolylineOptions();
+                List<HashMap<String, String>> path = routes.get(i);
+
+                for (int j = 0; j < path.size(); j++) {
+                    HashMap<String, String> point = path.get(j);
+
+                    double lat = Double.parseDouble(point.get("lat"));
+                    double lng = Double.parseDouble(point.get("lng"));
+                    LatLng position = new LatLng(lat, lng);
+
+                    points.add(position);
+                }
+
+                polyLineOptions.addAll(points);
+                polyLineOptions.width(5);
+                polyLineOptions.color(Color.BLUE);
+            }
+            if(polyline != null)
+                polyline.remove();
+
+            polyline = mMap.addPolyline(polyLineOptions);
+
+        }
     }
 
     @Override
     public void onMapClick(LatLng latLng) {
         //Toast.makeText(curActivity, "(" + latLng.latitude + "," + latLng.longitude + ")", Toast.LENGTH_LONG).show();
     }
+
+    /**
+     * Private helper method that adds a new location to the array and takes out an old one
+     * @param loc
+     */
+    private void addToDirectionHolder(CampusLocation loc){
+        if(directionHolder[0] == null)
+        {
+            directionHolder[0] = loc;
+        }
+        else if(directionHolder[1] == null)
+        {
+            directionHolder[1] = loc;
+        }
+        else
+        {
+            directionHolder[0] = directionHolder[1];
+            directionHolder[1] = loc;
+        }
+    }
+
 
     /**
      * This is where we can add markers or lines, add listeners or move the camera. In this case, we
@@ -520,3 +646,4 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     }
 
 }
+
