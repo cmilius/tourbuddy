@@ -11,7 +11,7 @@
   
 <head>
     <meta charset="utf-8">
-    <title>Edit Info - Tour Buddy Admin</title>
+    <title>Edit Info - TourBuddy Admin</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">    
@@ -116,12 +116,12 @@
 				</li>
 				
                 
-                <li>					
+               <!-- <li>					
 					<a href="notes.php">
 						<i class="icon-bar-chart"></i>
 						<span>Notes</span>
 					</a>  									
-				</li>
+				</li> -->
                 
                 
                 <li>					
@@ -131,12 +131,12 @@
 					</a>  									
 				</li>
 				
-					<li>
+					<!--<li>
 					<a href="../../adminView.html">
 						<i class="icon-list-alt"></i>
 						<span>ISU Building Statistics</span> 
 					</a> 
-				</li>
+				</li>-->
 				
 				
 			
@@ -240,7 +240,7 @@
     
 
 	
-	<div class="main-inner">
+	<!--<div class="main-inner">
 
 	    <div class="container">
 	
@@ -253,7 +253,7 @@
 					<div class="widget-header">
 						<i class="icon-th-large"></i>
 						<h3>Edit Building Information</h3>
-					</div> <!-- /widget-header -->
+					</div> <!-- /widget-header 
 					
 					<div class="widget-content">
 						
@@ -265,13 +265,13 @@
 					                
 						        	<div class="plan-title">
 						        		First Agent	        		
-					        		</div> <!-- /plan-title -->
+					        		</div> <!-- /plan-title 
 					                
 						            <div class="plan-price">
 					                	$0<span class="term">For Life</span>
 									</div> <!-- /plan-price -->
 									
-						        </div> <!-- /plan-header -->	        
+						        </div> <!-- /plan-header 	        
 						        
 						        <div class="plan-features">
 									<ul>
@@ -280,7 +280,7 @@
 										<li>Pay only what you need</li>
 										<li>Chat support</li>
 									</ul>
-								</div> <!-- /plan-features -->
+								</div> <!-- /plan-features 
 								
 								<div class="plan-actions">				
 									<a href="javascript:;" class="btn">Signup Now</a>				
@@ -291,19 +291,19 @@
 					    
 					    
 					    
-					    <div class="plan-container">
+					    <!--<div class="plan-container">
 					        <div class="plan green">
 						        <div class="plan-header">
 					                
 						        	<div class="plan-title">
 						        		Flex Package	        		
-					        		</div> <!-- /plan-title -->
+					        		</div> <!-- /plan-title
 					                
 						            <div class="plan-price">
 					                	$5<span class="term">Per Agent</span>
 									</div> <!-- /plan-price -->
 									
-						        </div> <!-- /plan-header -->	          
+						        </div> <!-- /plan-header 	          
 						        
 						        <div class="plan-features">
 									<ul>					
@@ -312,14 +312,14 @@
 										<li>Email & Chat support</li>
 										<li>Multimedia support</li>
 									</ul>
-								</div> <!-- /plan-features -->
+								</div> <!-- /plan-features 
 								
 								<div class="plan-actions">				
 									<a href="javascript:;" class="btn">Signup Now</a>				
 								</div> <!-- /plan-actions -->
 					
 							</div> <!-- /plan -->
-					    </div> <!-- /plan-container -->
+					    </div> <!-- /plan-container 
 					    
 					    <div class="plan-container">
 					        <div class="plan">
@@ -327,13 +327,13 @@
 					                
 						        	<div class="plan-title">
 						        		Virtual Agent	        		
-					        		</div> <!-- /plan-title -->
+					        		</div> <!-- /plan-title 
 					                
 						            <div class="plan-price">
 					                	$30<span class="term">Per Month</span>
 									</div> <!-- /plan-price -->
 									
-						        </div> <!-- /plan-header -->	       
+						        </div> <!-- /plan-header 	       
 						        
 						        <div class="plan-features">
 									<ul>
@@ -342,20 +342,20 @@
 										<li>Mobile agent and multimedia support</li>
 										<li>Universal inbox and cases</li>
 									</ul>
-								</div> <!-- /plan-features -->
+								</div> <!-- /plan-features 
 								
 								<div class="plan-actions">				
 									<a href="javascript:;" class="btn">Signup Now</a>				
-								</div> <!-- /plan-actions -->
+								</div> <!-- /plan-actions 
 					
-							</div> <!-- /plan -->
+							</div> <!-- /plan 
 							
-					    </div> <!-- /plan-container -->
+					    </div> <!-- /plan-container 
 				
 				
-					</div> <!-- /pricing-plans -->
+					</div> <!-- /pricing-plans 
 						
-					</div> <!-- /widget-content -->
+					</div> <!-- /widget-content 
 						
 				</div> <!-- /widget -->					
 				
