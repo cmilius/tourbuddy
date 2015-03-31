@@ -11,7 +11,7 @@
   
  <head>
     <meta charset="utf-8">
-    <title>Visitor Statistics - Tour Buddy Admin</title>
+    <title>Visitor Statistics - TourBuddy Admin</title>
     
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
@@ -48,23 +48,12 @@
 			</a>
 			
 			<a class="brand" href="dashboard.php">
-				Tour Buddy Admin				
+				TourBuddy Admin				
 			</a>		
 			
 			<div class="nav-collapse">
 				<ul class="nav pull-right">
-					<li class="dropdown">						
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-							<i class="icon-cog"></i>
-							Account
-							<b class="caret"></b>
-						</a>
-						
-						<ul class="dropdown-menu">
-							<li><a href="javascript:;">Settings</a></li>
-							<li><a href="javascript:;">Help</a></li>
-						</ul>						
-					</li>
+					
 			
 					<li class="dropdown">						
 						<a href="#" class="dropdown-toggle" data-toggle="dropdown">
@@ -74,15 +63,13 @@
 						</a>
 						
 						<ul class="dropdown-menu">
-							<li><a href="javascript:;">Profile</a></li>
+							
 							<li><a href="php/logout.php">Logout</a></li>
 						</ul>						
 					</li>
 				</ul>
 			
-				<form class="navbar-search pull-right">
-					<input type="text" class="search-query" placeholder="Search">
-				</form>
+				
 				
 			</div><!--/.nav-collapse -->	
 	
@@ -123,12 +110,12 @@
 				
                 
                 
-                <li>					
+               <!-- <li>					
 					<a href="notes.php">
 						<i class="icon-bar-chart"></i>
 						<span>Notes</span>
 					</a>  									
-				</li>
+				</li>-->
                 
                 
                 <li>					
@@ -137,12 +124,13 @@
 						<span>Edit Building Information</span>
 					</a>  									
 				</li>
-				<li>
+				
+				<!--<li>
 					<a href="../../adminView.html">
 						<i class="icon-list-alt"></i>
 						<span>ISU Building Statistics</span> 
 					</a> 
-				</li>
+				</li>-->
 
 				
 			
@@ -164,86 +152,29 @@
 	    	
 	     <div class="row">
 	      	
-	      	<div class="span12">
+	      	
 	      
-	      	<div class="info-box">
-               <div class="row-fluid stats-box">
-                  <div class="span4">
-                  	<div class="stats-box-title">Vizitor</div>
-                    <div class="stats-box-all-info"><i class="icon-user" style="color:#3366cc;"></i> 555K</div>
-                    <div class="wrap-chart"><div id="visitor-stat" class="chart" style="padding: 0px; position: relative;"><canvas id="bar-chart1" class="chart-holder" height="150" width="325"></canvas></div></div>
-                  </div>
-                  
-                  <div class="span4">
-                    <div class="stats-box-title">Likes</div>
-                    <div class="stats-box-all-info"><i class="icon-thumbs-up"  style="color:#F30"></i> 66.66</div>
-                    <div class="wrap-chart"><div id="order-stat" class="chart" style="padding: 0px; position: relative;"><canvas id="bar-chart2" class="chart-holder" height="150" width="325"></canvas></div></div>
-                  </div>
-                  
-                  <div class="span4">
-                    <div class="stats-box-title">Orders</div>
-                    <div class="stats-box-all-info"><i class="icon-shopping-cart" style="color:#3C3"></i> 15.55</div>
-                    <div class="wrap-chart">
-                    
-                    <div id="user-stat" class="chart" style="padding: 0px; position: relative;"><canvas id="bar-chart3" class="chart-holder" height="150" width="325"></canvas></div>
-                    
-                    </div>
-                  </div>
-               </div>
-               
-               
+	      	<div class="info-box"> <!-- VISITOR TABLE HERE -->
+            
+               <table id="table" class="table table-striped"style="width:75%">
+            <thead>
+			<tr>
+                <th>Building Name</th>
+                <th>Total Visits</th>
+            </tr>
+			</thead>
+			
+        </table>
+			   
+		
              </div>
                
                
-         </div>
+       
          </div>      
 	      	
 	  	  <!-- /row -->
 	
-	      <div class="row">
-	      	
-	      	<div class="span6">
-	      		
-	      		<div class="widget">
-						
-					<div class="widget-header">
-						<i class="icon-star"></i>
-						<h3>Some Stats</h3>
-					</div> <!-- /widget-header -->
-					
-					<div class="widget-content">
-						<canvas id="pie-chart" class="chart-holder" height="250" width="538"></canvas>
-					</div> <!-- /widget-content -->
-						
-				</div> <!-- /widget -->
-				
-	      		
-	      		
-	      		
-		    </div> <!-- /span6 -->
-	      	
-	      	
-	      	<div class="span6">
-	      		
-	      		<div class="widget">
-							
-					<div class="widget-header">
-						<i class="icon-list-alt"></i>
-						<h3>Another Chart</h3>
-					</div> <!-- /widget-header -->
-					
-					<div class="widget-content">
-						<canvas id="bar-chart" class="chart-holder" height="250" width="538"></canvas>
-					</div> <!-- /widget-content -->
-				
-				</div> <!-- /widget -->
-									
-		      </div> <!-- /span6 -->
-	      	
-	      </div> <!-- /row -->
-	      
-	      
-	      
 	      
 			
 	      
