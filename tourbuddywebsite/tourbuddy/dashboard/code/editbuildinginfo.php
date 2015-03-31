@@ -6,6 +6,8 @@
 	}
 	
 	$buildingid = $_POST['id'];
+	echo($buildingid);
+	var_dump($_POST);
 
 ?>
 
@@ -189,9 +191,15 @@
 								</div>
 						</div>-->
 						
+							<?php
+								$imgLocTemp = $row['image_location'];
+								
+								$images = explode(";" , $imgLocTemp);
+								
+							?>
 							<div class="span6">
 								<div class="thumbnail">
-									<img src="img/buildings/<?php echo $row['image_location']?>" alt="...">
+									<img src="img/buildings/<?php echo $images[0]?>" alt="...">
 									
 								</div>
 								<br>
@@ -219,7 +227,7 @@
 								<input type="text" style="display:none" class="building_id" id="building_id" value="<?php echo $_POST['id']?>"></input>
 								
 							</div>
-							<br>
+							<br>			
 							<div class="form-group">
 								<input type="button" value="Cancel" id="cancelChanges" class="btn btn-danger" style="display:none"></input>
 								<input type="submit" value="Save Changes" id="saveChanges" class="btn btn-success" style="display:none"></input>
@@ -227,52 +235,79 @@
 							
 						</form>
 						
-						
 						</div>
 						
 
 						
 					</div> <!-- /widget-content -->
+					<div class="widget-header">
+						<i class="icon-th-large"></i>
+						<h3>Upload Additional Pictures</h3>
 					
+					</div> <!-- /widget-header -->
 					<div class="widget-content">
+					
 						<div class="span12">
-							<form id="fileupload" action="//" method="POST" enctype="multipart/form-data">
-							<!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
-							<div class="row fileupload-buttonbar">
-							<div class="col-lg-7">
-							<!-- The fileinput-button span is used to style the file input field as button -->
-							<span class="btn btn-success fileinput-button">
-								<i class="icon-plus"></i>
-								<span>Add files...</span>
-								<input style="height:0px;width:0px;" type="file" name="files[]" multiple >
-							</span>
-							<button type="submit" class="btn btn-primary start">
-								<i class="icon-upload"></i>
-								<span>Start upload</span>
-							</button>
-							<button type="reset" class="btn btn-warning cancel">
-								<i class="icon-ban-circle"></i>
-								<span>Cancel upload</span>
-							</button>
-							<button type="button" class="btn btn-danger delete">
-								<i class="icon-trash"></i>
-								<span>Delete</span>
-							</button>
-							<input type="checkbox" class="toggle">
-							<!-- The global file processing state -->
-							<span class="fileupload-process"></span>
-						</div>
-						<!-- The global progress state -->
-						<div class="col-lg-5 fileupload-progress fade">
-						<!-- The global progress bar -->
-							<div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100">
-								<div class="progress-bar progress-bar-success" style="width:0%;"></div>
+							<form role="form" id="fileupload" action="php/uploadPictures.php/" method="POST" enctype="multipart/form-data">
+								<div class="form-group">
+									<input type="text" style="display:none" id="buildingID"  class="form-control" name="buildingID" value="<?php echo $buildingid?>"></input>							
+								</div>
+							<div class="form-group">
+							<div class="span12">
+							<div class="span3">
+								<div class="thumbnail">
+									<img id="img1" src="#" alt="Upload Image for #1" />
+								</div>
+								<br>
 							</div>
-						<!-- The extended global progress state -->
-						<div class="progress-extended">&nbsp;</div>
-						
-						</div>
-				</div>
+							<div class="span6">
+								<div class="form-group">
+									<label for="fileUpload1">Picture Upload #1</label>
+									<input type="file" name="fileToUpload[]" id="fileUpload1">
+									
+									<p class="help-block">Upload Additional pictures for this building.</p>
+									<br>
+								</div>
+							</div>
+							</div>
+							<div class="span12">
+							<div class="span3">
+								<div class="thumbnail">
+									<img id="img2" src="#" alt="Upload Image for #2" />
+								</div>
+								<br>
+							</div>
+							<div class="span6">
+							<div class="form-group">
+								<label for="fileUpload2">Picture Upload #2</label>
+								<input type="file" name="fileToUpload[]" id="fileUpload2">
+								
+								<p class="help-block">Upload Additional pictures for this building.</p>
+								<br>
+							</div>
+							</div>
+							</div>
+							
+							<div class="span12">
+							<div class="span3">
+								<div class="thumbnail">
+									<img id="img3" src="#" alt="Upload Image for #3" />
+								</div>
+								<br>
+							</div>
+							<div class="span6">
+							<div class="form-group">
+								<label for="fileUpload3">Picture Upload #3</label>
+								<input type="file" name="fileToUpload[]" id="fileUpload3" multiple>
+								
+								<p class="help-block">Upload Additional pictures for this building.</p>
+								<br>
+							</div>
+							</div>
+							</div>
+							</div>
+							
+							<center><button type="submit" class="btn btn-success">Submit</button></center>
 					<!-- The table listing the files available for upload/download -->
 					<table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
 				</form>
@@ -373,6 +408,7 @@ $(function () {
 		$("#nameBuilding").show();
 		$("#saveChanges").show();
 		$("#cancelChanges").show();
+		$("#pictureUpload").show();
 		$("#editButton").hide();
     });
 	
@@ -380,18 +416,19 @@ $(function () {
 	 $('#cancelChanges').on('click', function () {
 		var bName = $('#buildingName').val();
 		
-        $('#buildingName').parent().append($('<span />').text(bName));
+        $('#buildingName').parent().append($('<span id="buildingName" class="buildingName"/>').text(bName));
         $('#buildingName').remove();    
 		
 		var bDescription = $('#buildingDesciption').val();
 		
-        $('#buildingDesciption').parent().append($('<span />').text(bDescription));
+        $('#buildingDesciption').parent().append($('<span id="buildingDesciption" class="buildingDesciption"/>').text(bDescription));
         $('#buildingDesciption').remove();
         
 		$("#editDiscription_tag").hide();
 		$("#nameBuilding").hide();
 		$("#saveChanges").hide();
 		$("#cancelChanges").hide();
+		$("#pictureUpload").hide();
 		$("#editButton").show();
    });
    
@@ -420,18 +457,19 @@ $(function () {
 		
 		var bName = $('#buildingName').val();
 		
-        $('#buildingName').parent().append($('<span />').text(bName));
+        $('#buildingName').parent().append($('<span id="buildingName" class="buildingName"/>').text(bName));
         $('#buildingName').remove();    
 		
 		var bDescription = $('#buildingDesciption').val();
 		
-        $('#buildingDesciption').parent().append($('<span />').text(bDescription));
+        $('#buildingDesciption').parent().append($('<span id="buildingDesciption" class="buildingDesciption"/>').text(bDescription));
         $('#buildingDesciption').remove();
         
 		$("#editDiscription_tag").hide();
 		$("#nameBuilding").hide();
 		$("#saveChanges").hide();
 		$("#cancelChanges").hide();
+		$("#pictureUpload").hide();
 		$("#editButton").show();
 	
 	//$('#form')[0].reset(); // To reset form fields
@@ -479,6 +517,70 @@ $(function () {
         </td>
     </tr>
 {% } %}
+</script>
+
+<script>
+ function readURL(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#img1').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+			
+        }
+
+}
+
+$("#fileUpload1").change(function(){
+    readURL(this);
+
+	
+});
+
+function readURL2(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#img2').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+			
+        }
+
+}
+
+$("#fileUpload2").change(function(){
+    readURL2(this);
+
+	
+});
+
+function readURL3(input) {
+        if (input.files && input.files[0]) {
+            var reader = new FileReader();
+            
+            reader.onload = function (e) {
+                $('#img3').attr('src', e.target.result);
+            }
+            
+            reader.readAsDataURL(input.files[0]);
+			
+        }
+
+}
+
+$("#fileUpload3").change(function(){
+    readURL3(this);
+
+	
+});
+
+
 </script>
 
 
