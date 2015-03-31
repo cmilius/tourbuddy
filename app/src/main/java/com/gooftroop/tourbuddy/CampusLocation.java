@@ -27,17 +27,6 @@ public class CampusLocation {
 
     private boolean visited;
 
-    /**
-     *
-     * @param id
-     * @param name
-     * @param markerLocation
-     * @param buildingBoundsList
-     * @param backgroundInfo
-     * @param imagesList
-     * @param imageDescriptionList
-     * @param visited
-     */
     public CampusLocation(int id, String name, LatLng markerLocation, List<LatLngBounds> buildingBoundsList, String backgroundInfo, List<Integer> imagesList, List<String> imageDescriptionList, boolean visited)
     {
         this.id = id;
