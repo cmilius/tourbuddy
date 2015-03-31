@@ -7,7 +7,7 @@
 	
 	$buildingid = $_POST['id'];
 	echo($buildingid);
-	var_dump($_POST);
+	//var_dump($_POST);
 
 ?>
 
@@ -193,9 +193,9 @@
 						
 							<?php
 								$imgLocTemp = $row['image_location'];
-								
 								$images = explode(";" , $imgLocTemp);
-								
+								$length = count($images);
+								$length = $length-1;
 							?>
 							<div class="span6">
 								<div class="thumbnail">
@@ -203,6 +203,32 @@
 									
 								</div>
 								<br>
+								<?PHP
+								for($i=1; $i < $length; $i++)
+								{
+									echo '<div class="span2">';
+									echo '<div class="thumbnail">';
+										echo '<img src="img/buildings/'.$images[$i].'" alt="...">';
+									
+									echo '</div>';
+									echo '<br>';
+									echo '</div>';
+								}
+								?>
+								<!--<div class="span2">
+								<div class="thumbnail">
+									<img src="img/buildings/<?php echo $images[2]?>" alt="...">
+									
+								</div>
+								<br>
+							</div>
+							<div class="span2">
+								<div class="thumbnail">
+									<img src="img/buildings/<?php echo $images[3]?>" alt="...">
+									
+								</div>
+								<br>
+							</div>-->
 							</div>
 							
 					
@@ -251,26 +277,28 @@
 							<form role="form" id="fileupload" action="php/uploadPictures.php/" method="POST" enctype="multipart/form-data">
 								<div class="form-group">
 									<input type="text" style="display:none" id="buildingID"  class="form-control" name="buildingID" value="<?php echo $buildingid?>"></input>							
+									<input type="text" style="display:none" id="buildingName"  class="form-control" name="buildingName" value="<?php echo $_POST['name']?>"></input>							
+									<input type="text" style="display:none" id="count"  class="form-control" name="count" value="<?php echo $length?>"></input>							
 								</div>
 							<div class="form-group">
 							<div class="span12">
 							<div class="span3">
 								<div class="thumbnail">
-									<img id="img1" src="#" alt="Upload Image for #1" />
+									<img id="img" src="#" alt="Upload Image for #1" />
 								</div>
 								<br>
 							</div>
 							<div class="span6">
 								<div class="form-group">
-									<label for="fileUpload1">Picture Upload #1</label>
-									<input type="file" name="fileToUpload[]" id="fileUpload1">
+									<label for="fileUpload">Picture Upload #1</label>
+									<input type="file" name="fileToUpload" id="fileUpload">
 									
 									<p class="help-block">Upload Additional pictures for this building.</p>
 									<br>
 								</div>
 							</div>
 							</div>
-							<div class="span12">
+							<!--<div class="span12">
 							<div class="span3">
 								<div class="thumbnail">
 									<img id="img2" src="#" alt="Upload Image for #2" />
@@ -289,27 +317,28 @@
 							</div>
 							
 							<div class="span12">
-							<div class="span3">
-								<div class="thumbnail">
-									<img id="img3" src="#" alt="Upload Image for #3" />
-								</div>
-								<br>
-							</div>
-							<div class="span6">
-							<div class="form-group">
-								<label for="fileUpload3">Picture Upload #3</label>
-								<input type="file" name="fileToUpload[]" id="fileUpload3" multiple>
-								
-								<p class="help-block">Upload Additional pictures for this building.</p>
-								<br>
-							</div>
-							</div>
-							</div>
+									<div class="span3">
+										<div class="thumbnail">
+											<img id="img3" src="#" alt="Upload Image for #3" />
+										</div>
+										<br>	
+									</div>
+										
+									<div class="span6">
+										<div class="form-group">
+											<label for="fileUpload3">Picture Upload #3</label>
+											<input type="file" name="fileToUpload[]" id="fileUpload3" multiple>
+											
+											<p class="help-block">Upload Additional pictures for this building.</p>
+											<br>
+										</div>
+									</div>
+								</div>-->
 							</div>
 							
 							<center><button type="submit" class="btn btn-success">Submit</button></center>
 					<!-- The table listing the files available for upload/download -->
-					<table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
+					<!--<table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>-->
 				</form>
 				</div>
 			</div>
@@ -487,37 +516,6 @@ $(function () {
 
 </script>
 
-<script id="template-upload" type="text/x-tmpl">
-{% for (var i=0, file; file=o.files[i]; i++) { %}
-    <tr class="template-upload fade">
-        <td>
-            <span class="preview"></span>
-        </td>
-        <td>
-            <p class="name">{%=file.name%}</p>
-            <strong class="error text-danger"></strong>
-        </td>
-        <td>
-            <p class="size">Processing...</p>
-            <div class="progress progress-striped active" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><div class="progress-bar progress-bar-success" style="width:0%;"></div></div>
-        </td>
-        <td>
-            {% if (!i && !o.options.autoUpload) { %}
-                <button class="btn btn-primary start" disabled>
-                    <i class="icon-upload"></i>
-                    <span>Start</span>
-                </button>
-            {% } %}
-            {% if (!i) { %}
-                <button class="btn btn-warning cancel">
-                    <i class="icon-ban-circle"></i>
-                    <span>Cancel</span>
-                </button>
-            {% } %}
-        </td>
-    </tr>
-{% } %}
-</script>
 
 <script>
  function readURL(input) {
@@ -525,7 +523,7 @@ $(function () {
             var reader = new FileReader();
             
             reader.onload = function (e) {
-                $('#img1').attr('src', e.target.result);
+                $('#img').attr('src', e.target.result);
             }
             
             reader.readAsDataURL(input.files[0]);
@@ -534,51 +532,13 @@ $(function () {
 
 }
 
-$("#fileUpload1").change(function(){
+$("#fileUpload").change(function(){
     readURL(this);
 
 	
 });
 
-function readURL2(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            
-            reader.onload = function (e) {
-                $('#img2').attr('src', e.target.result);
-            }
-            
-            reader.readAsDataURL(input.files[0]);
-			
-        }
 
-}
-
-$("#fileUpload2").change(function(){
-    readURL2(this);
-
-	
-});
-
-function readURL3(input) {
-        if (input.files && input.files[0]) {
-            var reader = new FileReader();
-            
-            reader.onload = function (e) {
-                $('#img3').attr('src', e.target.result);
-            }
-            
-            reader.readAsDataURL(input.files[0]);
-			
-        }
-
-}
-
-$("#fileUpload3").change(function(){
-    readURL3(this);
-
-	
-});
 
 
 </script>
