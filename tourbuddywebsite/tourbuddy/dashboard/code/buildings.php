@@ -190,13 +190,20 @@
 						</div>-->
 					
 						<?PHP
+							//Code to fetch building information from database and 
+							//display all buildings in database
 							while($row = mysqli_fetch_assoc($result))
 							{
 								$description = substr($row['description'],0,60);
+								$string = $row['image_location'];
+								
+								$images = explode(";" , $string);
+								//echo 'print-r('.$images.')';
+								
 								echo '<div class="span3">';
 								
 								echo '<div class="thumbnail">';
-								echo '<img src="img/buildings/'.$row['image_location'].'">';
+								echo '<img src="img/buildings/'.$images[0].'">';
 								echo '<div class="caption">';
 								echo '<h3><center>'.$row['name'].'</center></h3>';
 								echo '<p><center>'.$description.'...</center></p>';
