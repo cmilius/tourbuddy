@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.UUID;
 
 /**
  * Created by Austin on 2/25/2015.
@@ -31,6 +32,7 @@ public class HttpClientHelper {
             JSONObject req = new JSONObject();
             req.put("building_id", 1);
             req.put("type", "visit");
+
             return httpPostJSON(req, "http://gala.cs.iastate.edu/~erichk/index.php");
             //httpPostJSON();
             //httpPost(nameValuePairs, "http://gala.cs.iastate.edu/~erichk/index.php", curContext);
@@ -64,19 +66,6 @@ public class HttpClientHelper {
         HttpResponse response = httpclient.execute(httpPost);
         return response;
     }
-
-//    public static void httpPost(List<NameValuePair> nameValuePairs, String url, Context curContext) throws Exception {
-//        DefaultHttpClient httpclient = new DefaultHttpClient();
-//
-//        HttpPost httpost = new HttpPost(url);
-//
-//        httpost.setEntity(new UrlEncodedFormEntity(nameValuePairs));
-//
-//        //Handles what is returned from the page
-//        HttpResponse response = httpclient.execute(httpost);
-//
-//        Toast.makeText(curContext, "Response code:" + response.getStatusLine().getStatusCode(), Toast.LENGTH_LONG).show();
-//    }
 
     public String readUrl(String mapsApiDirectionsUrl) throws IOException {
         String data = "";
