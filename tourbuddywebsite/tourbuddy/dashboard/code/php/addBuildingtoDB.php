@@ -13,7 +13,7 @@
 	
 	
 	$fileName = uploadFile();
-	$fileName = ";".$fileName.";";
+	$fileName = $fileName.";";
 	echo($buildingName);
 	
 	$sql = "INSERT INTO buildings (name, description, image_location) 
