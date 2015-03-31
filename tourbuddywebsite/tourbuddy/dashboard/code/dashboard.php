@@ -4,6 +4,7 @@
 	{
 		header("Location:login.php");
 	}
+	//var_dump($_POST);
 ?>
 
 <!DOCTYPE html>
