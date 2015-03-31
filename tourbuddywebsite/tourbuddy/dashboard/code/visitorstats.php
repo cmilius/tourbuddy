@@ -142,49 +142,62 @@
 
 </div> <!-- /subnavbar -->
     
-
-    
 <div class="main">
-	
-	<div class="main-inner">
+  <div class="main-inner">
+    <div class="container">
+      <div class="row">
+        <div class="span12">
+          <div class="widget">
+            <div class="widget-header"> <i class="icon-list-alt"></i>
+              <h3> Visitor Statistics</h3>
+            </div>
+            <!-- /widget-header -->
+            <div class="widget-content">
+              
+			  <table id="table" class="table table-striped"style="width:75%">
+					<thead>
+					
+					<tr>
+						<th>Building Name</th>
+						<th>Total Visits</th>
+					</tr>
+				
+				</thead>
+				<tbody>
+					<tr>
+						<td>Coover Hall</td>
+						<td>10</td>
+					</tr>
+			
+					
+				</tbody>
+			
+				</table>
 
-	    <div class="container">
-	    	
-	     <div class="row">
-	      	
-	      	
-	      
-	      	<div class="info-box"> <!-- VISITOR TABLE HERE -->
-            
-               <table id="table" class="table table-striped"style="width:75%">
-            <thead>
-			<tr>
-                <th>Building Name</th>
-                <th>Total Visits</th>
-            </tr>
-			</thead>
-			
-        </table>
-			   
+                </div>
+                <!-- /widget-content --> 
+					
+              </div>
+			  
+            </div>
+          </div>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
+		<br>
 		
-             </div>
-               
-               
-       
-         </div>      
-	      	
-	  	  <!-- /row -->
-	
-	      
-			
-	      
-	      
-	    </div> <!-- /container -->
-	    
-	</div> <!-- /main-inner -->
-    
-</div> <!-- /main -->
-    
+        </div>
+      
+	  </div>
+      <!-- /row --> 
+    </div>
+    <!-- /container --> 
+  </div>
+  <!-- /main-inner --> 
+</div>
 
     
 
