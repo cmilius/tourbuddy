@@ -6,7 +6,7 @@
 	}
 	
 	$buildingid = $_POST['id'];
-	echo($buildingid);
+	//echo($buildingid);
 	//var_dump($_POST);
 
 ?>
