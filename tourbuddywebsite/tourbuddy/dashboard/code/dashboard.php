@@ -5,6 +5,7 @@
 		header("Location:login.php");
 	}
 	//var_dump($_POST);
+	
 ?>
 
 <!DOCTYPE html>
@@ -27,6 +28,37 @@
     <![endif]-->
 </head>
 <body>
+<?PHP
+
+$servername="localhost";
+$username="SlamminJammins";
+$password="xaBre3ta";
+$dbname="SlamminJammins";
+
+//Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+
+//Check connection
+if ($conn->connect_error){
+	die("Connection failed: " . $conn->connect_error);
+	}
+	
+$sql = "Select COUNT(deviceID) FROM visitors
+		UNION
+		SELECT SUM(visits) from visits;";
+			
+$result = mysqli_query($conn, $sql);
+$count = mysqli_fetch_row($result);
+$visitors = $count[0];
+
+$count = mysqli_fetch_row($result);
+$totalVisits = $count[0];
+$avgVisits = floor($totalVisits / $visitors);
+
+$conn->close();
+
+?>
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container"> <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
@@ -82,12 +114,12 @@
                 <div class="widget-content">
                   <h6 class="bigstats">Number of visitors and the number of buildings that were visited today </h6>
                   <div id="big_stats" class="cf">
-                    <div class="stat"> <i class="icon-user"></i> <span class="value">851</span> </div>
+                    <div class="stat"> <i class="icon-user"></i> <span class="value"><?PHP echo($visitors) ?></span> </div>
                     <!-- .stat -->
                     
-                    <div class="stat"> <i class="icon-map-marker"></i> <span class="value">423</span> </div>
+                    <div class="stat"> <i class="icon-map-marker"></i> <span class="value"><?PHP echo($totalVisits) ?></span> </div>
                     <!-- .stat -->
-					 <div class="stat"> <i class="icon-twitter-sign"></i> <span class="value">922</span> </div>
+					 <div class="stat"> <i class="icon-twitter-sign"></i> <span class="value"><?PHP echo($avgVisits) ?></span> </div>
                     <!-- .stat -->
                     
                     <div class="stat"> <i class="icon-bullhorn"></i> <span class="value">25%</span> </div>
