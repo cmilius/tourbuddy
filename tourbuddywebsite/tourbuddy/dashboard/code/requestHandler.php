@@ -1,6 +1,5 @@
 <?php
 
-//Http POST body: {"type"={update, visit},"building_id"="xxxxx","version"=xxxxx"}
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Headers: Origin, X-Requested-With, Content-Type, Accept");
 
@@ -9,7 +8,21 @@ logInputs($input);
 $json = json_decode($input, true);
 $req_type = $json["type"];
 
-if($req_type == "update"){
+switch($req_type){
+	case "getVersion":
+		echo getAppVersion();
+		break;
+	case "getUpdate":
+		echo sendUpdate();
+		break;
+	case "visit":
+		$buildingID = $json["building_id"];
+		$deviceID = $json["device_id"];
+		updateVisits($buildingID, $deviceID);
+		break;
+}
+
+/*if($req_type == "update"){
 	$app_version = $json["version"];
 	$version = getAppVersion();
 	if($app_version < $version){
@@ -20,7 +33,7 @@ if($req_type == "update"){
 else if($req_type == "visit"){
 	$buildingID = $json["building_id"];
 	updateVisits($buildingID);
-}
+}*/
 
 //FOR DEBUGGING
 //updateVisits(1);
@@ -41,20 +54,27 @@ function getAppVersion(){
 	return $row["version"];
 }
 
-function updateVisits($buildingID) {
+function updateVisits($buildingID, $deviceID) {
+	/*$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
+	
+	$query = "UPDATE visits SET visits = visits + 1, WHERE id ='".$buildingID."'";
+	$query .= 'CALL updateVisitors($deviceID, $buildingID)';
+	$result = mysqli_multi_query($conn, $query);
+	$conn->close();*/
+	
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
 	
-	$query = "UPDATE visits SET visits = visits + 1 WHERE id ='".$buildingID."'";
+	$query = "CALL updateVisitors('".$deviceID . "','" . $buildingID . "');";
 	$result = mysqli_query($conn, $query);
 	$conn->close();
 }
 
 //may need to change return technique depending on what we decide to do with the images
-function sendUpdate($buildingID){
+function sendUpdate(){
 	
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
 		
-	$query = "SELECT * from buildings where id='".$buildingID."'";
+	$query = "SELECT * from buildings";
 	$result = mysqli_query($conn, $query);
 	$rows = array();
 	while($r = mysqli_fetch_assoc($result)){
@@ -62,7 +82,7 @@ function sendUpdate($buildingID){
 	}
 	$json = json_encode($rows, true);
 	$conn->close();
-	echo $json;
+	return $json;
 	
 }
 

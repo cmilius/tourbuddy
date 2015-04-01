@@ -13,21 +13,25 @@
 	
 	
 	$fileName = uploadFile();
-	$fileName = ";".$fileName.";";
-	echo($buildingName);
+	if($fileName != '')
+	{
+		$fileName = $fileName.";";
+		echo($buildingName);
 	
-	$sql = "INSERT INTO buildings (name, description, image_location) 
+		$sql = "INSERT INTO buildings (name, description, image_location) 
 			VALUES('$buildingName', '$buildingDescription', '$fileName')";
 	
 	
-	$result = mysqli_query($conn, $sql);
+		$result = mysqli_query($conn, $sql);
 	
-	if($result === TRUE)
-	{
-		updateVersionNumber($conn);
-		header("Location:../buildings.php");
+	
+		if($result === TRUE)
+		{
+			updateVersionNumber($conn);
+			header("Location:../buildings.php");
+		}
+		echo("ok");
 	}
-	echo("ok");
 	mysqli_close($conn);
 	
 	function clean_input($data)
@@ -69,11 +73,13 @@
 		// Check if file already exists
 		if (file_exists($target_file)) {
 			echo "Sorry, file already exists.";
+			header("Location:../building.php");
 			$uploadOk = 0;
 		}
 		// Check file size
 		if ($_FILES["fileToUpload"]["size"] > 500000) {
 			echo "Sorry, your file is too large.";
+			header("Location:../building.php");
 			$uploadOk = 0;
 		}
 		// Allow certain file formats
@@ -87,15 +93,16 @@
 			echo "Sorry, your file was not uploaded.";
 			// if everything is ok, try to upload file
 			} else {
-				$imageName = $tempBuildingName."_default.".$imageFileType;
+				$imageName = $tempBuildingName."_0.".$imageFileType;
 				$target_file = $target_dir . $imageName;//basename($_FILES["fileToUpload"]["name"]);
 				if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_file)) {
 					echo "The file ". basename( $_FILES["fileToUpload"]["name"]). " has been uploaded.";
+					return $folder . $imageName;
 				} else {
 					echo "Sorry, there was an error uploading your file.";
 				}
 			}
-		return $folder . $imageName;
+		return '';
 	}
 	function updateVersionNumber($conn){
 		$sql = "UPDATE version_number SET version = version + 1";

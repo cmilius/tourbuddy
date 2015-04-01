@@ -4,6 +4,8 @@
 	{
 		header("Location:login.php");
 	}
+	//var_dump($_POST);
+	
 ?>
 
 <!DOCTYPE html>
@@ -26,6 +28,37 @@
     <![endif]-->
 </head>
 <body>
+<?PHP
+
+$servername="localhost";
+$username="SlamminJammins";
+$password="xaBre3ta";
+$dbname="SlamminJammins";
+
+//Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+
+//Check connection
+if ($conn->connect_error){
+	die("Connection failed: " . $conn->connect_error);
+	}
+	
+$sql = "Select COUNT(deviceID) FROM visitors
+		UNION
+		SELECT SUM(visits) from visits;";
+			
+$result = mysqli_query($conn, $sql);
+$count = mysqli_fetch_row($result);
+$visitors = $count[0];
+
+$count = mysqli_fetch_row($result);
+$totalVisits = $count[0];
+$avgVisits = floor($totalVisits / $visitors);
+
+$conn->close();
+
+?>
 <div class="navbar navbar-fixed-top">
   <div class="navbar-inner">
     <div class="container"> <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"><span
@@ -56,9 +89,9 @@
       <ul class="mainnav">
         <li class="active"><a href="dashboard.php"><i class="icon-dashboard"></i><span>Dashboard</span> </a> </li>
         <li><a href="visitorstats.php"><i class="icon-list-alt"></i><span>Visitor Statistics</span> </a> </li>
-        <li><a href="notes.php"><i class="icon-bar-chart"></i><span>Notes</span> </a> </li>
+        <!--<li><a href="notes.php"><i class="icon-bar-chart"></i><span>Notes</span> </a> </li>-->
         <li><a href="buildings.php"><i class="icon-map-marker"></i><span>Edit Building Information</span> </a> </li>
-        <li><a href="../../adminView.html"><i class="icon-list-alt"></i><span>ISU Building Statistics</span> </a> </li>
+        <!--<li><a href="../../adminView.html"><i class="icon-list-alt"></i><span>ISU Building Statistics</span> </a> </li>-->
       </ul>
     </div>
     <!-- /container --> 
@@ -70,7 +103,7 @@
   <div class="main-inner">
     <div class="container">
       <div class="row">
-        <div class="span6">
+        <div class="span12">
           <div class="widget widget-nopad">
             <div class="widget-header"> <i class="icon-list-alt"></i>
               <h3> Today's Visitor Stats</h3>
@@ -81,44 +114,46 @@
                 <div class="widget-content">
                   <h6 class="bigstats">Number of visitors and the number of buildings that were visited today </h6>
                   <div id="big_stats" class="cf">
-                    <div class="stat"> <i class="icon-user"></i> <span class="value">851</span> </div>
+                    <div class="stat"> <i class="icon-user"></i> <span class="value"><?PHP echo($visitors) ?></span> </div>
                     <!-- .stat -->
                     
-                    <div class="stat"> <i class="icon-map-marker"></i> <span class="value">423</span> </div>
+                    <div class="stat"> <i class="icon-map-marker"></i> <span class="value"><?PHP echo($totalVisits) ?></span> </div>
                     <!-- .stat -->
-					 <div class="stat"> <i class="icon-twitter-sign"></i> <span class="value">922</span> </div>
+					 <div class="stat"> <i class="icon-twitter-sign"></i> <span class="value"><?PHP echo($avgVisits) ?></span> </div>
                     <!-- .stat -->
                     
                     <div class="stat"> <i class="icon-bullhorn"></i> <span class="value">25%</span> </div>
-                    
+                
                    
                     <!-- .stat --> 
                   </div>
+
                 </div>
                 <!-- /widget-content --> 
-                
+					
               </div>
+			  
             </div>
           </div>
           <!-- /widget -->
-          <div class="widget widget-nopad">
+         <!-- <div class="widget widget-nopad">
             <div class="widget-header"> <i class="icon-list-alt"></i>
               <h3> Recent News</h3>
             </div>
             <!-- /widget-header -->
-            <div class="widget-content">
+          <!--  <div class="widget-content">
               <div id='calendar'>
               </div>
             </div>
-            <!-- /widget-content --> 
+            <!-- /widget-content
           </div>
           <!-- /widget -->
-          <div class="widget">
+          <!--<div class="widget">
             <div class="widget-header"> <i class="icon-file"></i>
               <h3> Content</h3>
             </div>
             <!-- /widget-header -->
-            <div class="widget-content">
+           <!-- <div class="widget-content">
               <ul class="messages_layout">
                 <li class="from_user left"> <a href="#" class="avatar"><img src="img/message_avatar1.png"/></a>
                   <div class="message_wrap"> <span class="arrow"></span>
@@ -186,46 +221,52 @@
                 </li>
               </ul>
             </div>
-            <!-- /widget-content --> 
+            <!-- /widget-content
           </div>
-          <!-- /widget --> 
+          <!-- /widget--> 
+		<br>
+		<br>
+		<br>
+		<br>
+		
         </div>
+		
         <!-- /span6 -->
-        <div class="span6">
+        <!--<div class="span6">
           <div class="widget">
             <div class="widget-header"> <i class="icon-bookmark"></i>
               <h3>Important Shortcuts</h3>
             </div>
             <!-- /widget-header -->
-            <div class="widget-content">
+            <!--<div class="widget-content">
               <div class="shortcuts"> <a href="javascript:;" class="shortcut"><i class="shortcut-icon icon-list-alt"></i><span
                                         class="shortcut-label">Apps</span> </a><a href="javascript:;" class="shortcut"><i
                                             class="shortcut-icon icon-bookmark"></i><span class="shortcut-label">Bookmarks</span> </a><a href="javascript:;" class="shortcut"><i class="shortcut-icon icon-signal"></i> <span class="shortcut-label">Reports</span> </a><a href="javascript:;" class="shortcut"> <i class="shortcut-icon icon-comment"></i><span class="shortcut-label">Comments</span> </a><a href="javascript:;" class="shortcut"><i class="shortcut-icon icon-user"></i><span
                                                 class="shortcut-label">Users</span> </a><a href="javascript:;" class="shortcut"><i
                                                     class="shortcut-icon icon-file"></i><span class="shortcut-label">Notes</span> </a><a href="javascript:;" class="shortcut"><i class="shortcut-icon icon-picture"></i> <span class="shortcut-label">Photos</span> </a><a href="javascript:;" class="shortcut"> <i class="shortcut-icon icon-tag"></i><span class="shortcut-label">Tags</span> </a> </div>
-              <!-- /shortcuts --> 
+              <!-- /shortcuts 
             </div>
-            <!-- /widget-content --> 
+            <!-- /widget-content 
           </div>
           <!-- /widget -->
-          <div class="widget">
+          <!--<div class="widget">
             <div class="widget-header"> <i class="icon-signal"></i>
               <h3> Area Chart Example</h3>
             </div>
-            <!-- /widget-header -->
+            <!-- /widget-header
             <div class="widget-content">
               <canvas id="area-chart" class="chart-holder" height="250" width="538"> </canvas>
-              <!-- /area-chart --> 
+              <!-- /area-chart 
             </div>
-            <!-- /widget-content --> 
+            <!-- /widget-content 
           </div>
           <!-- /widget -->
-          <div class="widget widget-table action-table">
+         <!-- <div class="widget widget-table action-table">
             <div class="widget-header"> <i class="icon-th-list"></i>
               <h3>A Table Example</h3>
             </div>
             <!-- /widget-header -->
-            <div class="widget-content">
+            <!--<div class="widget-content">
               <table class="table table-striped table-bordered">
                 <thead>
                   <tr>
@@ -264,15 +305,15 @@
                 </tbody>
               </table>
             </div>
-            <!-- /widget-content --> 
+            <!-- /widget-content 
           </div>
           <!-- /widget --> 
-          <div class="widget widget-nopad">
+          <!--<div class="widget widget-nopad">
             <div class="widget-header"> <i class="icon-list-alt"></i>
               <h3> Recent News</h3>
             </div>
             <!-- /widget-header -->
-            <div class="widget-content">
+            <!--<div class="widget-content">
               <ul class="news-items">
                 <li>
                   
@@ -300,12 +341,13 @@
                 </li>
               </ul>
             </div>
-            <!-- /widget-content --> 
+            <!-- /widget-content
           </div>
-          <!-- /widget -->
+          <!-- /widget
         </div>
         <!-- /span6 --> 
-      </div>
+      
+	  </div>
       <!-- /row --> 
     </div>
     <!-- /container --> 
