@@ -1,17 +1,17 @@
 package com.gooftroop.tourbuddy;
 
-import android.location.Location;
 import android.text.TextUtils;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
-import java.util.Arrays;
 import java.util.List;
 
 public class CampusLocation {
 
     private int id;
+
+    private int schoolId;
 
     private String name;
 
@@ -19,7 +19,7 @@ public class CampusLocation {
 
     private List<LatLngBounds> buildingBoundsList;
 
-    private String backgroundInfo;
+    private String description;
 
     private List<Integer> imagesList;
 
@@ -27,9 +27,11 @@ public class CampusLocation {
 
     private boolean visited;
 
-    public CampusLocation(int id, String name, LatLng markerLocation, List<LatLngBounds> buildingBoundsList, String backgroundInfo, List<Integer> imagesList, List<String> imageDescriptionList, boolean visited)
+    public CampusLocation(int id, int schoolId, String name, LatLng markerLocation, List<LatLngBounds> buildingBoundsList, String description, List<Integer> imagesList, List<String> imageDescriptionList, boolean visited)
     {
         this.id = id;
+
+        this.schoolId = schoolId;
 
         if (TextUtils.isEmpty(name))
         {
@@ -49,11 +51,11 @@ public class CampusLocation {
         }
         this.buildingBoundsList = buildingBoundsList;
 
-        if (backgroundInfo == null)
+        if (description == null)
         {
             throw new IllegalArgumentException("Background info should not be null");
         }
-        this.backgroundInfo = backgroundInfo;
+        this.description = description;
 
 
         if (imageDescriptionList == null)
@@ -74,11 +76,18 @@ public class CampusLocation {
         this.imagesList = imagesList;
 
         this.imageDescriptionList = imageDescriptionList;
+
+        this.visited = visited;
     }
 
     public int getId()
     {
         return id;
+    }
+
+    public int getSchoolId()
+    {
+        return schoolId;
     }
 
     public String getName()
@@ -96,9 +105,9 @@ public class CampusLocation {
         return buildingBoundsList;
     }
 
-    public String getBackgroundInfo()
+    public String getDescription()
     {
-        return backgroundInfo;
+        return description;
     }
 
     public List<Integer> getImagesList()
@@ -114,6 +123,11 @@ public class CampusLocation {
     public boolean getVisited()
     {
         return visited;
+    }
+
+    public void setVisited(boolean visited)
+    {
+        this.visited = visited;
     }
 
     /**

@@ -11,6 +11,7 @@ import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceGroup;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
@@ -23,6 +24,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
@@ -36,6 +39,8 @@ import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
 
 import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -50,6 +55,10 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     private Activity curActivity = this;
 
     private boolean SHOW_BUILDING_BOUNDS = true;
+
+    private ProgressBar progressBarDirectionsLoading;
+
+    private TextView textViewProgressText;
 
     /**
      * Maintains a Master List of All Campus location and whether or not they have been visited
@@ -79,6 +88,8 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_activity_images_layout);
 
+        setVariables();
+
         //Initialize to Sweeney for App Demo
         setPageViewer(3);
         mDrawerItemNames = getResources().getStringArray(R.array.nav_drawer_items);
@@ -103,12 +114,17 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         }
 
         db.close();
-
         setUpMapIfNeeded();
-
         setupLocationListener();
+        new UpdateDatabase(curActivity).execute();
 
-        new VisitLocation(curActivity, dbLocations.get(0)).execute();
+        //new VisitLocation(curActivity, dbLocations.get(0)).execute();
+    }
+
+    private void setVariables()
+    {
+        progressBarDirectionsLoading = (ProgressBar) findViewById(R.id.progressBarDirectionsLoading);
+        textViewProgressText = (TextView) findViewById(R.id.textViewProgressText);
     }
 
     /**
@@ -149,7 +165,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         protected HttpResponse doInBackground(Void... params) {
             try
             {
-                return HttpClientHelper.visitLocation(location);
+                return HttpClientHelper.visitLocation(location, curActivity);
             }
             catch (Exception e)
             {
@@ -172,6 +188,46 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
             }
         }
     }
+
+
+
+    public class UpdateDatabase extends AsyncTask<Void, Void, JSONArray>
+    {
+        private Activity curActivity;
+
+        public UpdateDatabase(Activity curActivity)
+        {
+            this.curActivity = curActivity;
+        }
+
+        @Override
+        protected JSONArray doInBackground(Void... params) {
+            try
+            {
+                return HttpClientHelper.updateDatabase(curActivity);
+            }
+            catch (Exception e)
+            {
+                System.out.println(e.getMessage());
+                return null;
+            }
+        }
+
+        @Override
+        protected void onPostExecute(JSONArray result)
+        {
+//            if (result == null)
+//            {
+//                Toast.makeText(curActivity, "Updating Database", Toast.LENGTH_LONG).show();
+//            }
+
+//            if (result.getStatusLine().getStatusCode() == 200)
+//            {
+//                Toast.makeText(curActivity, "Updating Database 200", Toast.LENGTH_LONG).show();
+//            }
+        }
+    }
+
 
     //drawer's item click listener
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
@@ -437,8 +493,7 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
     //create a new readtask and draw the directions on the map
     private void drawDirections(){
         String url = getMapsApiDirectionsUrl();
-        ReadTask downloadTask = new ReadTask();
-        downloadTask.execute(url);
+        new ReadTask().execute(url);
     }
 
     private String getMapsApiDirectionsUrl(){
@@ -457,6 +512,14 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
 
     private class ReadTask extends AsyncTask<String, Void, String> {
+
+        @Override
+        protected void onPreExecute()
+        {
+            progressBarDirectionsLoading.setVisibility(View.VISIBLE);
+            textViewProgressText.setVisibility(View.VISIBLE);
+        }
+
         @Override
         protected String doInBackground(String... url) {
             String data = "";
@@ -476,12 +539,10 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
         }
     }
 
-    private class ParserTask extends
-            AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
+    private class ParserTask extends AsyncTask<String, Integer, List<List<HashMap<String, String>>>> {
 
         @Override
-        protected List<List<HashMap<String, String>>> doInBackground(
-                String... jsonData) {
+        protected List<List<HashMap<String, String>>> doInBackground(String... jsonData) {
 
             JSONObject jObject;
             List<List<HashMap<String, String>>> routes = null;
@@ -526,6 +587,8 @@ public class MapView extends FragmentActivity implements GoogleMap.OnMarkerClick
 
             polyline = mMap.addPolyline(polyLineOptions);
 
+            progressBarDirectionsLoading.setVisibility(View.GONE);
+            textViewProgressText.setVisibility(View.GONE);
         }
     }
 
