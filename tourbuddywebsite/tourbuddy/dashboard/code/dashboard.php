@@ -54,7 +54,7 @@ $visitors = $count[0];
 
 $count = mysqli_fetch_row($result);
 $totalVisits = $count[0];
-$avgVisits = floor($totalVisits / $visitors);
+$avgVisits = round(($totalVisits / $visitors), 1);
 
 $conn->close();
 
@@ -112,19 +112,19 @@ $conn->close();
             <div class="widget-content">
               <div class="widget big-stats-container">
                 <div class="widget-content">
-                  <h6 class="bigstats">Number of visitors and the number of buildings that were visited today </h6>
+                  <h6 class="bigstats">The information below displays statistics for the Number of visitors, number of 
+										buildings that have been visited, and average number of buildings each person visited </h6>
                   <div id="big_stats" class="cf">
-                    <div class="stat"> <i class="icon-user"></i> <span class="value"><?PHP echo($visitors) ?></span> </div>
+                    <div class="stat"> <i class="icon-user"></i> <span class="value"><?PHP echo($visitors) ?></span> <h4><br><br>Total Number of Visitors</h4></div>
                     <!-- .stat -->
                     
-                    <div class="stat"> <i class="icon-map-marker"></i> <span class="value"><?PHP echo($totalVisits) ?></span> </div>
+                    <div class="stat"> <i class="icon-map-marker"></i> <span class="value"><?PHP echo($totalVisits) ?></span> <h4><br><br>Total Number of Buildings Visited</h4></div>
                     <!-- .stat -->
-					 <div class="stat"> <i class="icon-twitter-sign"></i> <span class="value"><?PHP echo($avgVisits) ?></span> </div>
+					
+					 <div class="stat"> <i class="icon-group"></i> <span class="value"><?PHP echo($avgVisits) ?> </span> <h4><br><br>Average Number of Buildings each Person Visited</h4></div>
                     <!-- .stat -->
-                    
-                    <div class="stat"> <i class="icon-bullhorn"></i> <span class="value">25%</span> </div>
-                
-                   
+                 
+            
                     <!-- .stat --> 
                   </div>
 
