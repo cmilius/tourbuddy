@@ -4,6 +4,10 @@
 	{
 		header("Location:login.php");
 	}
+	
+	
+	
+
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +38,31 @@
   </head>
 
 <body>
+
+<?PHP
+
+$servername="localhost";
+$username="SlamminJammins";
+$password="xaBre3ta";
+$dbname="SlamminJammins";
+
+//Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+
+//Check connection
+if ($conn->connect_error){
+	die("Connection failed: " . $conn->connect_error);
+	}
+	
+$sql = "Select buildings.id, buildings.name, visits.visits FROM visits 
+			INNER JOIN buildings on visits.id=buildings.id ORDER BY name asc";
+			
+$result = mysqli_query($conn, $sql);
+
+$conn->close();
+
+?>
 
 <div class="navbar navbar-fixed-top">
 	
@@ -164,11 +193,18 @@
 				
 				</thead>
 				<tbody>
-					<tr>
-						<td>Coover Hall</td>
-						<td>10</td>
-					</tr>
-			
+					
+					<?PHP
+						
+							while($row = mysqli_fetch_assoc($result))
+							{
+								echo '<tr>';
+								echo '<td>' . $row['name'].'</td>';
+								echo '<td>'.$row['visits'].'</td>';
+								echo '</tr>';
+							}
+						
+					?>
 					
 				</tbody>
 			
@@ -255,7 +291,7 @@
 <script src="js/chart.min.js" type="text/javascript"></script>
 <script src="js/bootstrap.js"></script>
 <script src="js/base.js"></script>
-<script>
+<!--<script>
 
     var pieData = [
 				{
@@ -297,7 +333,7 @@
 	var myLine = new Chart(document.getElementById("bar-chart2").getContext("2d")).Bar(barChartData);
 	var myLine = new Chart(document.getElementById("bar-chart3").getContext("2d")).Bar(barChartData);
 	
-	</script>
+	</script>-->
 
 
   </body>
