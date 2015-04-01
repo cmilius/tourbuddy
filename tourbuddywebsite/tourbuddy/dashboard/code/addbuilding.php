@@ -116,12 +116,12 @@
 				</li>
 				
                 
-                <li>					
+                <!--<li>					
 					<a href="notes.php">
 						<i class="icon-bar-chart"></i>
 						<span>Notes</span>
 					</a>  									
-				</li>
+				</li>-->
                 
                 
                 <li>					
@@ -131,12 +131,12 @@
 					</a>  									
 				</li>
 				
-					<li>
+					<!--<li>
 					<a href="../../adminView.html">
 						<i class="icon-list-alt"></i>
 						<span>ISU Building Statistics</span> 
 					</a> 
-				</li>
+				</li>-->
 				
 				
 			
