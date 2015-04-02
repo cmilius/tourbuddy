@@ -3,19 +3,15 @@ package com.gooftroop.tourbuddy;
 import android.content.ContentValues;
 import android.content.Context;
 
-import android.content.ContentValues;
-import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.SQLException;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.text.TextUtils;
 
-import com.google.android.gms.internal.bu;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_LOCATION_ID;
+import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_SCHOOL_ID;
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_LOCATION_NAME;
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_LOCATION_MARKER_COORDINATES;
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.COLUMN_LOCATION_BUILDING_BOUNDS;
@@ -29,8 +25,6 @@ import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.TABLE_LOCATIONS;
 import static com.gooftroop.tourbuddy.TourBuddySQLiteHelper.TABLE_NOTES;
 
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,7 +38,7 @@ public class DataSource {
     private TourBuddySQLiteHelper dbHelper;
 
     private static final String[] allLocationsColumns = {
-            COLUMN_LOCATION_ID, COLUMN_LOCATION_NAME, COLUMN_LOCATION_MARKER_COORDINATES,
+            COLUMN_LOCATION_ID, COLUMN_SCHOOL_ID, COLUMN_LOCATION_NAME, COLUMN_LOCATION_MARKER_COORDINATES,
             COLUMN_LOCATION_BUILDING_BOUNDS, COLUMN_LOCATION_BACKGROUND,
             COLUMN_LOCATION_IMAGES_AND_DESCRIPTIONS, COLUMN_LOCATION_VISITED };
 
@@ -127,13 +121,14 @@ public class DataSource {
 
     public CampusLocation createCampusLocation(CampusLocation loc)
     {
-        return createCampusLocation(loc.getId(), loc.getName(), loc.getMarkerLocation(), loc.getBuildingBoundsList(), loc.getBackgroundInfo(), loc.getImagesList(), loc.getImageDescriptionList(), loc.getVisited());
+        return createCampusLocation(loc.getId(), loc.getSchoolId(), loc.getName(), loc.getMarkerLocation(), loc.getBuildingBoundsList(), loc.getDescription(), loc.getImagesList(), loc.getImageDescriptionList(), loc.getVisited());
     }
 
-    public CampusLocation createCampusLocation(int id, String name, LatLng markerLocation, List<LatLngBounds> buildingBoundsList, String backgroundInfo, List<Integer> imagesList, List<String> imageDescriptionList, boolean visited) {
+    public CampusLocation createCampusLocation(int id, int schoolId, String name, LatLng markerLocation, List<LatLngBounds> buildingBoundsList, String backgroundInfo, List<Integer> imagesList, List<String> imageDescriptionList, boolean visited) {
         long insertId = 0;
         ContentValues values = new ContentValues();
         values.put(COLUMN_LOCATION_ID, id);
+        values.put(COLUMN_SCHOOL_ID, schoolId);
         values.put(COLUMN_LOCATION_NAME, name);
         values.put(COLUMN_LOCATION_MARKER_COORDINATES, markerLocation.latitude + "\t" + markerLocation.longitude);
 
@@ -227,13 +222,14 @@ public class DataSource {
 
     private CampusLocation cursorToCampusLocation(Cursor cursor) {
         int id = cursor.getInt(0);
-        String name = cursor.getString(1);
-        String[] markerCoordsArr = cursor.getString(2).split("\t");
+        int schoolId = cursor.getInt(1);
+        String name = cursor.getString(2);
+        String[] markerCoordsArr = cursor.getString(3).split("\t");
         double lat = Double.parseDouble(markerCoordsArr[0]);
         double lon = Double.parseDouble(markerCoordsArr[1]);
         LatLng markerLoc = new LatLng(lat, lon);
 
-        String[] boundsArr = cursor.getString(3).split("\t");
+        String[] boundsArr = cursor.getString(4).split("\t");
         ArrayList<LatLngBounds> boundsList = new ArrayList<LatLngBounds>();
         for (int i = 0; i<boundsArr.length; i=i+4)
         {
@@ -247,12 +243,12 @@ public class DataSource {
             bounds.include(new LatLng(lat2, long2));
             boundsList.add(bounds.build());
         }
-        String background = cursor.getString(4);
+        String background = cursor.getString(5);
 
         ArrayList<Integer> images = new ArrayList<Integer>();
         ArrayList<String> descriptions = new ArrayList<String>();
 
-        String[] imageDescArr = cursor.getString(5).split("\t");
+        String[] imageDescArr = cursor.getString(6).split("\t");
         for (int i = 0; i<imageDescArr.length; i=i+2)
         {
             images.add(Integer.parseInt(imageDescArr[i]));
@@ -261,11 +257,11 @@ public class DataSource {
 
         boolean visited = false;
 
-        if (cursor.getInt(6) == 1)
+        if (cursor.getInt(7) == 1)
         {
             visited = true;
         }
 
-        return new CampusLocation(id, name, markerLoc, boundsList, background, images, descriptions, visited);
+        return new CampusLocation(id, schoolId, name, markerLoc, boundsList, background, images, descriptions, visited);
     }
 }

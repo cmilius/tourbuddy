@@ -22,12 +22,27 @@
             tools:context=".MapView"
             android:name="com.google.android.gms.maps.SupportMapFragment" />
 
+        <TextView
+            android:id="@+id/textViewProgressText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/loadingDirectionsString"
+            android:visibility="gone"
+            android:layout_gravity="center_horizontal"/>
+
+        <ProgressBar
+            android:id="@+id/progressBarDirectionsLoading"
+            android:indeterminate="true"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"/>
+
         <android.support.v4.view.ViewPager xmlns:android="http://schemas.android.com/apk/res/android"
             android:id="@+id/viewpager"
             android:layout_width="fill_parent"
             android:layout_height="0dp"
             android:layout_weight="40"/>
-
     </LinearLayout>
 
     <!-- The navigation drawer -->

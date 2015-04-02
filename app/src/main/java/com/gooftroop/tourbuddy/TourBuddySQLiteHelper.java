@@ -16,6 +16,7 @@ public class TourBuddySQLiteHelper extends SQLiteOpenHelper {
 
     public static final String TABLE_LOCATIONS = "locations";
     public static final String COLUMN_LOCATION_ID = "_id";
+    public static final String COLUMN_SCHOOL_ID = "schoolId";
     public static final String COLUMN_LOCATION_NAME = "name";
     public static final String COLUMN_LOCATION_MARKER_COORDINATES = "markerCoordinates";
     public static final String COLUMN_LOCATION_BUILDING_BOUNDS = "buildingBounds";
@@ -33,13 +34,14 @@ public class TourBuddySQLiteHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     private static final String[] allLocationsColumns = {
-            COLUMN_LOCATION_ID, COLUMN_LOCATION_NAME, COLUMN_LOCATION_MARKER_COORDINATES,
+            COLUMN_LOCATION_ID, COLUMN_SCHOOL_ID, COLUMN_LOCATION_NAME, COLUMN_LOCATION_MARKER_COORDINATES,
             COLUMN_LOCATION_BUILDING_BOUNDS, COLUMN_LOCATION_BACKGROUND,
             COLUMN_LOCATION_IMAGES_AND_DESCRIPTIONS, COLUMN_LOCATION_VISITED };
 
     private static final String DATABASE_CREATE_LOCATIONS_TABLE = "create table "
             + TABLE_LOCATIONS + "("
-            + COLUMN_LOCATION_ID + " integer primary key autoincrement, "
+            + COLUMN_LOCATION_ID + " integer primary key, "
+            + COLUMN_SCHOOL_ID + " integer not null, "
             + COLUMN_LOCATION_NAME + " text not null, "
             + COLUMN_LOCATION_MARKER_COORDINATES + " text not null, "
             + COLUMN_LOCATION_BUILDING_BOUNDS + " text not null, "
@@ -173,6 +175,7 @@ public class TourBuddySQLiteHelper extends SQLiteOpenHelper {
         long insertId = 0;
         ContentValues values = new ContentValues();
         values.put(COLUMN_LOCATION_ID, id);
+        values.put(COLUMN_SCHOOL_ID, 1000);
         values.put(COLUMN_LOCATION_NAME, name);
         values.put(COLUMN_LOCATION_MARKER_COORDINATES, markerLocation.latitude + "\t" + markerLocation.longitude);
 
