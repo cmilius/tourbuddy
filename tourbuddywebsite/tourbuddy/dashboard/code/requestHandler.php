@@ -60,13 +60,34 @@ function updateVisits($buildingID, $deviceID) {
 	$query = "UPDATE visits SET visits = visits + 1, WHERE id ='".$buildingID."'";
 	$query .= 'CALL updateVisitors($deviceID, $buildingID)';
 	$result = mysqli_multi_query($conn, $query);
-	$conn->close();*/
+	$conn->close();
 	
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
 	
 	$query = "CALL updateVisitors('".$deviceID . "','" . $buildingID . "');";
 	$result = mysqli_query($conn, $query);
+	$conn->close();*/
+	
+	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
+	
+	$query = "SELECT * FROM visitors WHERE deviceID='" . $deviceID . "'";
+	$result = mysqli_query($conn, $query);
+	$rowCount = mysqli_num_rows($result);
+	$row = mysqli_fetch_assoc($result);
 	$conn->close();
+	$id;
+	
+	if($rowCount >= 1)
+	{
+		$id = $row['id'];
+		addVisitor($buildingID, $deviceID, $id);
+	}
+	else
+	{
+		newVisitor($buildingID, $deviceID);
+	}
+	
+	updateVisitsTbl($buildingID, $deviceID);
 }
 
 //may need to change return technique depending on what we decide to do with the images
@@ -97,5 +118,34 @@ function logInputs($input){
 	fwrite($fh, "\n");
 	fclose($fh);
 }
+
+function addVisitor($buildingID, $deviceID, $id)
+{	
+	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
+	$query = "UPDATE visitors SET buildingsVisited=CONCAT(buildingsVisited,'" . $buildingID . "',';') WHERE id='" . $id . "';";
+	
+	$result = mysqli_query($conn, $query);
+	
+	$conn->close();
+}
+
+function newVisitor($buildingID, $deviceID)
+{	
+	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
+	$query = "INSERT INTO visitors (deviceID, buildingsVisited) VALUES ('" . $deviceID . "','" . $buildingID . "');";
+	echo($query);
+	$result = mysqli_query($conn, $query);
+	$conn->close();
+}
+
+function updateVisitsTbl($buildingID, $deviceID)
+{
+	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
+	$query = "UPDATE visits SET visits = visits+1, deviceID=CONCAT(deviceID,'" . $deviceID . "', ';') WHERE id='" . $buildingID . "';";
+	echo($query);
+	$result = mysqli_query($conn, $query);
+	$conn->close();
+}
+
 
 ?>
