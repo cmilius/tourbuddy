@@ -7,6 +7,8 @@ $input = file_get_contents('php://input');
 logInputs($input);
 $json = json_decode($input, true);
 $req_type = $json["type"];
+$buildingID = $json["building_id"];
+$deviceID = $json["device_id"];
 
 switch($req_type){
 	case "getVersion":
@@ -36,7 +38,7 @@ else if($req_type == "visit"){
 }*/
 
 //FOR DEBUGGING
-//updateVisits(1);
+//updateVisits($json["building_id"], $json["device_id"]);
 //sendUpdate(1);
 //$test = getAppVersion();
 //echo $test;
@@ -55,6 +57,7 @@ function getAppVersion(){
 }
 
 function updateVisits($buildingID, $deviceID) {
+	
 	/*$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
 	
 	$query = "UPDATE visits SET visits = visits + 1, WHERE id ='".$buildingID."'";
@@ -81,13 +84,14 @@ function updateVisits($buildingID, $deviceID) {
 	{
 		$id = $row['id'];
 		addVisitor($buildingID, $deviceID, $id);
+		updateVisitsTbl($buildingID, $deviceID);
 	}
 	else
 	{
 		newVisitor($buildingID, $deviceID);
+		updateVisitsTbl($buildingID, $deviceID);
 	}
-	
-	updateVisitsTbl($buildingID, $deviceID);
+	//updateVisitsTbl($buildingID, $deviceID);
 }
 
 //may need to change return technique depending on what we decide to do with the images
@@ -120,12 +124,10 @@ function logInputs($input){
 }
 
 function addVisitor($buildingID, $deviceID, $id)
-{	
+{		
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
 	$query = "UPDATE visitors SET buildingsVisited=CONCAT(buildingsVisited,'" . $buildingID . "',';') WHERE id='" . $id . "';";
-	
 	$result = mysqli_query($conn, $query);
-	
 	$conn->close();
 }
 
@@ -133,7 +135,6 @@ function newVisitor($buildingID, $deviceID)
 {	
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
 	$query = "INSERT INTO visitors (deviceID, buildingsVisited) VALUES ('" . $deviceID . "','" . $buildingID . "');";
-	echo($query);
 	$result = mysqli_query($conn, $query);
 	$conn->close();
 }
@@ -142,9 +143,9 @@ function updateVisitsTbl($buildingID, $deviceID)
 {
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
 	$query = "UPDATE visits SET visits = visits+1, deviceID=CONCAT(deviceID,'" . $deviceID . "', ';') WHERE id='" . $buildingID . "';";
-	echo($query);
 	$result = mysqli_query($conn, $query);
 	$conn->close();
+	
 }
 
 
