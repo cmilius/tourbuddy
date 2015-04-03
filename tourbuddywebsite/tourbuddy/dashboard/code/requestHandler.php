@@ -10,6 +10,15 @@ $req_type = $json["type"];
 $buildingID = $json["building_id"];
 $deviceID = $json["device_id"];
 
+$buildingID = $json["building_id"];
+
+	
+		$deviceID = $json["device_id"];
+		$query = "INSERT INTO visitors (deviceID, buildingsVisited) VALUES ('" . $deviceID . "','" . $buildingID . "');";
+		echo($query);
+		updateVisits($buildingID, $deviceID);
+
+
 switch($req_type){
 	case "getVersion":
 		echo getAppVersion();
@@ -134,7 +143,8 @@ function addVisitor($buildingID, $deviceID, $id)
 function newVisitor($buildingID, $deviceID)
 {	
 	$conn = new mysqli("localhost", "SlamminJammins", "xaBre3ta", "SlamminJammins");
-	$query = "INSERT INTO visitors (deviceID, buildingsVisited) VALUES ('" . $deviceID . "','" . $buildingID . "');";
+	$query = "INSERT INTO visitors (deviceID, buildingsVisited) VALUES ('" . $deviceID . "','" . $buildingID . "';');";
+	
 	$result = mysqli_query($conn, $query);
 	$conn->close();
 }
